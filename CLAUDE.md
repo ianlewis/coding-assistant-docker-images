@@ -1,24 +1,32 @@
-# CLAUDE.md
+# Agent Guidelines
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Coding Agents like Claude Code (claude.ai/code)
+when working with code in this repository.
 
 ## Project Overview
 
-This repository contains secure Docker images for various code assistants, including **OpenCode** and **Claude Code**. The primary focus is providing locked-down containerized environments that allow code assistants to run securely without compromising the host system.
+This repository contains secure Docker images for various code assistants,
+including **OpenCode** and **Claude Code**. The primary focus is providing
+locked-down containerized environments that allow code assistants to run
+securely without compromising the host system.
 
 ## Architecture
 
 ### Two Main Images
+
 - **opencode/**: Contains the OpenCode AI assistant (opencode-ai package)
-- **claude-code/**: Contains the Claude Code assistant (@anthropic-ai/claude-code package)
+- **claude-code/**: Contains the Claude Code assistant
+  (@anthropic-ai/claude-code package)
 
 ### Security Features
+
 - Based on Node.js 22.17.0 slim image with pinned SHA256 digest
 - Runs with restricted permissions using `gosu`
 - Designed to work with gVisor (runsc) for additional sandboxing
 - All package versions are pinned with specific version numbers
 
 ### Directory Structure
+
 - `/workspace`: Working directory mounted from host
 - `/local`: Persistent storage for agent data
 - `/app`: Application installation directory
@@ -26,15 +34,17 @@ This repository contains secure Docker images for various code assistants, inclu
 ## Common Development Commands
 
 ### Building Images
+
 ```bash
 # Build OpenCode image
 make opencode-docker
 
-# Build Claude Code image  
+# Build Claude Code image
 make claude-code-docker
 ```
 
 ### Running Agents
+
 ```bash
 # Run OpenCode agent
 make run-opencode
@@ -44,6 +54,7 @@ make run-claude-code
 ```
 
 ### Code Quality
+
 ```bash
 # Format all files
 make format
@@ -67,6 +78,7 @@ make todos
 ```
 
 ### Maintenance
+
 ```bash
 # Clean temporary files
 make clean
@@ -94,15 +106,21 @@ npm install --package-lock-only
 
 ## Testing
 
-The repository uses GitHub Actions for CI/CD with comprehensive linting and security checks. All changes must pass:
-- Multiple linters (markdownlint, yamllint, textlint, actionlint, hadolint, zizmor)
+The repository uses GitHub Actions for CI/CD with comprehensive linting and
+security checks. All changes must pass:
+
+- Multiple linters (markdownlint, yamllint, textlint, actionlint, hadolint,
+  zizmor)
 - License header validation
 - Security scanning
 - Build verification
 
 ## Important Notes
 
-- This is a infrastructure/tooling repository focused on containerized code assistants
+- This is a infrastructure/tooling repository focused on containerized code
+  assistants
 - Both images share similar base configuration but serve different AI assistants
-- Security is a primary concern - all changes should maintain the locked-down nature
-- The images are published to `ghcr.io/ianlewis/opencode` and `ghcr.io/ianlewis/claude-code`
+- Security is a primary concern - all changes should maintain the locked-down
+  nature
+- The images are published to `ghcr.io/ianlewis/opencode` and
+  `ghcr.io/ianlewis/claude-code`
