@@ -8,9 +8,9 @@ intention is to provide a locked-down environment for coding assistants that
 allow them to be run in a secure manner that won't be able to do damage to the
 host system.
 
-## opencode
+## `opencode`
 
-The [opencode](https://github.com/sst/opencode) image can be run with the
+The [`opencode`](https://github.com/sst/opencode) image can be run with the
 following commands. The local state is stored in
 `~/.local/share/opencode-docker`.
 
@@ -44,4 +44,54 @@ docker run \
     --volume "$(pwd):/workspace" \
     --volume "${XDG_DATA_HOME}/opencode-docker:/local" \
     "ghcr.io/ianlewis/opencode"
+```
+
+## `claude-code`
+
+The [`claude-code`](https://github.com/anthropics/claude-code) image can be run with the
+following commands. The local state is stored in
+`~/.local/share/claude-code-docker`.
+
+```bash
+XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
+mkdir -p "${XDG_DATA_HOME}/claude-code-docker"; \
+# Ensure the .claude.json file exists, as we need to bind mount it into the
+# container.
+if [ ! -f "${XDG_DATA_HOME}/claude-code-docker/claude.json" ]; then \
+    echo "{}" > "${XDG_DATA_HOME}/claude-code-docker/claude.json"; \
+fi; \
+docker run \
+    --rm \
+    --interactive \
+    --tty \
+    --name claude-code \
+    --volume "$(pwd):/workspace" \
+    --volume "${XDG_DATA_HOME}/claude-code-docker/claude.json:/claude.json" \
+    --volume "${XDG_DATA_HOME}/claude-code-docker:/local" \
+    "ghcr.io/ianlewis/claude-code"
+```
+
+Run with [gVisor](https://gvisor.dev/) for additional security. This requires
+`runsc` to be [installed and
+configured](https://gvisor.dev/docs/user_guide/install/) as a runtime for
+Docker:
+
+```bash
+XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
+mkdir -p "${XDG_DATA_HOME}/claude-code-docker"; \
+# Ensure the .claude.json file exists, as we need to bind mount it into the
+# container.
+if [ ! -f "${XDG_DATA_HOME}/claude-code-docker/claude.json" ]; then \
+    echo "{}" > "${XDG_DATA_HOME}/claude-code-docker/claude.json"; \
+fi; \
+docker run \
+    --rm \
+    --interactive \
+    --tty \
+    --name claude-code \
+    --runtime runsc \
+    --volume "$(pwd):/workspace" \
+    --volume "${XDG_DATA_HOME}/claude-code-docker/claude.json:/claude.json" \
+    --volume "${XDG_DATA_HOME}/claude-code-docker:/local" \
+    "ghcr.io/ianlewis/claude-code"
 ```

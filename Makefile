@@ -34,6 +34,9 @@ AQUA_URL = https://$(AQUA_REPO)/releases/download/$(AQUA_VERSION)/aqua_$(kernel)
 AQUA_ROOT_DIR = $(REPO_ROOT)/.aqua
 
 OPENCODE_IMAGE_NAME ?= ghcr.io/ianlewis/opencode
+CLAUDECODE_IMAGE_NAME ?= ghcr.io/ianlewis/claude-code
+
+XDG_DATA_HOME ?= $(HOME)/.local/share
 
 # The help command prints targets in groups. Help documentation in the Makefile
 # uses comments with double hash marks (##). Documentation is printed by the
@@ -106,20 +109,47 @@ $(AQUA_ROOT_DIR)/.installed: .aqua.yaml .bin/aqua-$(AQUA_VERSION)/aqua
 #####################################################################
 
 run-opencode: opencode-docker ## Run opencode.
-	@docker run \
-		--rm \
-		--interactive \
-		--tty \
-		--name opencode \
-		--volume "$(REPO_ROOT):/workspace" \
-		--volume "$(HOME)/.local/share/opencode-docker:/local" \
-		"$(OPENCODE_IMAGE_NAME)"
+	@set -euo pipefail; \
+		mkdir -p "$(XDG_DATA_HOME)/opencode-docker"; \
+		docker run \
+			--rm \
+			--interactive \
+			--tty \
+			--name opencode \
+			--volume "$(REPO_ROOT):/workspace" \
+			--volume "$(XDG_DATA_HOME)/opencode-docker:/local" \
+			"$(OPENCODE_IMAGE_NAME)"
+
+run-claude-code: claude-code-docker ## Run claude-code.
+	@set -euo pipefail; \
+		mkdir -p "$(XDG_DATA_HOME)/claude-code-docker"; \
+		if [ ! -f "$(XDG_DATA_HOME)/claude-code-docker/claude.json" ]; then \
+			echo "{}" > "$(XDG_DATA_HOME)/claude-code-docker/claude.json"; \
+		fi; \
+		docker run \
+			--rm \
+			--interactive \
+			--tty \
+			--name claude-code \
+			--runtime runsc \
+			--volume "$(REPO_ROOT):/workspace" \
+			--volume "$(XDG_DATA_HOME)/claude-code-docker/claude.json:/claude.json" \
+			--volume "$(XDG_DATA_HOME)/claude-code-docker:/claude" \
+			"$(CLAUDECODE_IMAGE_NAME)"
 
 ## Image
 #####################################################################
 
+opencode/package-lock.json: opencode/package.json
+	@npm install \
+		--prefix opencode/ \
+		--package-lock-only \
+		--no-audit \
+		--no-fund \
+		opencode/
+
 .PHONY: image
-opencode-docker: ## Build the opencode Docker image.
+opencode-docker: opencode/package-lock.json ## Build the opencode Docker image.
 	@set -euo pipefail; \
 		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 			docker build \
@@ -132,6 +162,29 @@ opencode-docker: ## Build the opencode Docker image.
 				--tag "$(OPENCODE_IMAGE_NAME)" \
 				--file opencode/Dockerfile \
 				opencode/; \
+		fi
+
+claude-code/package-lock.json: claude-code/package.json
+	@npm install \
+		--prefix claude-code/ \
+		--package-lock-only \
+		--no-audit \
+		--no-fund \
+		claude-code/
+
+claude-code-docker: opencode/package-lock.json ## Build the claude-code Docker image.
+	@set -euo pipefail; \
+		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+			docker build \
+				--progress=plain \
+				--tag "$(CLAUDECODE_IMAGE_NAME)" \
+				--file claude-code/Dockerfile \
+				claude-code/; \
+		else \
+			docker build \
+				--tag "$(CLAUDECODE_IMAGE_NAME)" \
+				--file claude-code/Dockerfile \
+				claude-code/; \
 		fi
 
 ## Tools
@@ -197,6 +250,7 @@ json-format: node_modules/.installed ## Format JSON files.
 		fi; \
 		./node_modules/.bin/prettier \
 			--write \
+			--no-error-on-unmatched-pattern \
 			$${files}
 
 .PHONY: md-format
@@ -213,6 +267,7 @@ md-format: node_modules/.installed ## Format Markdown files.
 		# NOTE: prettier uses .editorconfig for tab-width. \
 		./node_modules/.bin/prettier \
 			--write \
+			--no-error-on-unmatched-pattern \
 			$${files}
 
 .PHONY: yaml-format
@@ -228,6 +283,7 @@ yaml-format: node_modules/.installed ## Format YAML files.
 		fi; \
 		./node_modules/.bin/prettier \
 			--write \
+			--no-error-on-unmatched-pattern \
 			$${files}
 
 ## Linting
