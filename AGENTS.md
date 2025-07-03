@@ -16,7 +16,7 @@
 - **Encoding**: UTF-8
 - **Trailing whitespace**: Remove all trailing whitespace
 - **Markdown**: Use dash-style unordered lists, 4-space indentation, fenced code blocks with backticks
-- **YAML**: Follow yamllint rules, disable line-length checks
+- **YAML**: Follow `yamllint` rules, disable line-length checks
 - **Shell scripts**: Use `#!/usr/bin/env bash`, `set -euo pipefail`, proper error handling
 - **Comments**: Single space from content in YAML
 - **License headers**: Apache 2.0 license required on all source files
