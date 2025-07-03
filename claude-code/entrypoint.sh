@@ -14,11 +14,11 @@ GROUP_ID=$(stat -c %g /workspace)
 CONTAINER_USER_ID=${CONTAINER_USER_ID:-}
 
 # If USER_ID is root (0), and a non-root UID is specified via environment variable, use that instead
-if [ "$USER_ID" = "0" ] && [ -n "$CONTAINER_USER_ID" ] && [ "$CONTAINER_USER_ID" != "0" ]; then
-    USER_ID=$CONTAINER_USER_ID
+if [ "${USER_ID}" = "0" ] && [ -n "${CONTAINER_USER_ID}" ] && [ "${CONTAINER_USER_ID}" != "0" ]; then
+    USER_ID=${CONTAINER_USER_ID}
     # If GROUP_ID is not specified, make it the same as USER_ID
     GROUP_ID=${CONTAINER_GROUP_ID:-$USER_ID}
-    log "Using user ID from environment variable: $USER_ID:$GROUP_ID"
+    log "Using user ID from environment variable: ${USER_ID}:${GROUP_ID}"
 fi
 
 log "Running as user ID: ${USER_ID}, group ID: ${GROUP_ID}"
@@ -28,20 +28,33 @@ ln -sf /claude.json "$(getent passwd "${USER_ID}" | cut -d: -f6)/.claude.json"
 ln -sf /claude "$(getent passwd "${USER_ID}" | cut -d: -f6)/.claude"
 
 # If we're not root (could happen with custom docker run commands)
-if [ "$USER_ID" != "0" ]; then
+if [ "${USER_ID}" != "0" ]; then
     # Create group if it doesn't exist
-    if ! getent group "$GROUP_ID" >/dev/null 2>&1; then
-        groupadd -g "$GROUP_ID" appuser
+    if ! getent group "${GROUP_ID}" >/dev/null 2>&1; then
+        groupadd -g "${GROUP_ID}" appuser
     fi
 
     # Create user if it doesn't exist
-    if ! getent passwd "$USER_ID" >/dev/null 2>&1; then
-        useradd -u "$USER_ID" -g "$GROUP_ID" -d /workspace -s /bin/bash appuser
+    if ! getent passwd "${USER_ID}" >/dev/null 2>&1; then
+        useradd -u "${USER_ID}" -g "${GROUP_ID}" -d /workspace -s /bin/bash appuser
     fi
+fi
 
-    log "Initialization complete, launching command as UID $USER_ID: $*"
+user_home=$(getent passwd "${USER_ID}" | cut -d: -f6)
+if [ -z "$user_home" ]; then
+    log "ERROR: User home directory not found."
+    exit 1
+fi
+log "Creating symlinks in user home directory: ${user_home}"
+
+# Create a link from the local data directory to the user's home directory.
+ln -sf /claude.json "${user_home}/.claude.json"
+ln -sf /claude "${user_home}/.claude"
+
+if [ "${USER_ID}" != "0" ]; then
+    log "Initialization complete, launching command as UID ${USER_ID}: $*"
     # Use gosu to drop privileges and run the command as the app directory owner
-    exec gosu "$USER_ID:$GROUP_ID" bash -c "$@"
+    exec gosu "${USER_ID}:${GROUP_ID}" bash -c "$@"
 else
     log "Initialization complete, launching command as root: $*"
     exec bash -c "$@"
