@@ -24,6 +24,7 @@ rules:
       - "JSON" # JavaScript Object Notation
       - "LF" # Line Feed
       - "UTF" # Unicode Transformation Format
+      - "gVisor" # Google Sandbox Runtime
       - "opencode" # AI coding agent, built for the terminal.
       - "/[Bb]ackticks/" # Whitespace
       - "/[Ss]ubmodule/" # Submodule
