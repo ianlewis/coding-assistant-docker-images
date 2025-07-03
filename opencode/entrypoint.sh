@@ -42,7 +42,7 @@ if [ -z "$user_home" ]; then
     log "ERROR: User home directory not found."
     exit 1
 fi
-ln -sf "${user_home}/local" "/.local"
+ln -sf /local "${user_home}/.local"
 
 if [ "$USER_ID" != "0" ]; then
     log "Initialization complete, launching command as UID $USER_ID: $*"
