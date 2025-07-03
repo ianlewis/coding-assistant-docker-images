@@ -21,6 +21,13 @@ rules:
   spelling:
     language: "en"
     skipPatterns:
+      - "JSON" # JavaScript Object Notation
+      - "LF" # Line Feed
+      - "UTF" # Unicode Transformation Format
+      - "/[Bb]ackticks/" # Whitespace
+      - "/[Ss]ubmodule/" # Submodule
+      - "/[Ww]hitespace/" # Whitespace
+
       - "CHANGELOG"
       - "CODEOWNER"
       - "CLI"
