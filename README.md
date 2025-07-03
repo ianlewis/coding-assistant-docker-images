@@ -24,5 +24,24 @@ docker run \
     --name opencode \
     --volume "$(pwd):/workspace" \
     --volume "${XDG_DATA_HOME}/opencode-docker:/local" \
-    "ghcr.io/ianlewis/opencode-docker"
+    "ghcr.io/ianlewis/opencode"
+```
+
+Run with [gVisor](https://gvisor.dev/) for additional security. This requires
+`runsc` to be [installed and
+configured](https://gvisor.dev/docs/user_guide/install/) as a runtime for
+Docker:
+
+```bash
+XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
+mkdir -p "${XDG_DATA_HOME}/opencode-docker"
+docker run \
+    --rm \
+    --interactive \
+    --tty \
+    --name opencode \
+    --runtime runsc \
+    --volume "$(pwd):/workspace" \
+    --volume "${XDG_DATA_HOME}/opencode-docker:/local" \
+    "ghcr.io/ianlewis/opencode"
 ```

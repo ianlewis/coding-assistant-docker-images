@@ -33,7 +33,7 @@ AQUA_CHECKSUM ?= $(AQUA_CHECKSUM.$(uname_s).$(uname_m))
 AQUA_URL = https://$(AQUA_REPO)/releases/download/$(AQUA_VERSION)/aqua_$(kernel)_$(arch).tar.gz
 AQUA_ROOT_DIR = $(REPO_ROOT)/.aqua
 
-OPENCODE_IMAGE_NAME ?= github.com/ianlewis/opencode
+OPENCODE_IMAGE_NAME ?= ghcr.io/ianlewis/opencode
 
 # The help command prints targets in groups. Help documentation in the Makefile
 # uses comments with double hash marks (##). Documentation is printed by the
@@ -113,7 +113,7 @@ run-opencode: opencode-docker ## Run opencode.
 		--name opencode \
 		--volume "$(REPO_ROOT):/workspace" \
 		--volume "$(HOME)/.local/share/opencode-docker:/local" \
-		"$(OPENCODE_IMAGE_NAME):latest"
+		"$(OPENCODE_IMAGE_NAME)"
 
 ## Image
 #####################################################################
@@ -124,12 +124,12 @@ opencode-docker: ## Build the opencode Docker image.
 		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 			docker build \
 				--progress=plain \
-				--tag "$(OPENCODE_IMAGE_NAME):latest" \
+				--tag "$(OPENCODE_IMAGE_NAME)" \
 				--file opencode/Dockerfile \
 				opencode/; \
 		else \
 			docker build \
-				--tag "$(OPENCODE_IMAGE_NAME):latest" \
+				--tag "$(OPENCODE_IMAGE_NAME)" \
 				--file opencode/Dockerfile \
 				opencode/; \
 		fi
