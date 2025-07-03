@@ -33,6 +33,8 @@ AQUA_CHECKSUM ?= $(AQUA_CHECKSUM.$(uname_s).$(uname_m))
 AQUA_URL = https://$(AQUA_REPO)/releases/download/$(AQUA_VERSION)/aqua_$(kernel)_$(arch).tar.gz
 AQUA_ROOT_DIR = $(REPO_ROOT)/.aqua
 
+OPENCODE_IMAGE_NAME ?= github.com/ianlewis/opencode
+
 # The help command prints targets in groups. Help documentation in the Makefile
 # uses comments with double hash marks (##). Documentation is printed by the
 # help target in the order in appears in the Makefile.
@@ -99,6 +101,38 @@ $(AQUA_ROOT_DIR)/.installed: .aqua.yaml .bin/aqua-$(AQUA_VERSION)/aqua
 		--config .aqua.yaml \
 		install
 	@touch $@
+
+## Agents
+#####################################################################
+
+run-opencode: opencode-docker ## Run opencode.
+	@docker run \
+		--rm \
+		--interactive \
+		--tty \
+		--name opencode \
+		--volume "$(REPO_ROOT):/workspace" \
+		--volume "$(HOME)/.local/share/opencode-docker:/local" \
+		"$(OPENCODE_IMAGE_NAME):latest"
+
+## Image
+#####################################################################
+
+.PHONY: image
+opencode-docker: ## Build the opencode Docker image.
+	@set -euo pipefail; \
+		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+			docker build \
+				--progress=plain \
+				--tag "$(OPENCODE_IMAGE_NAME):latest" \
+				--file opencode/Dockerfile \
+				opencode/; \
+		else \
+			docker build \
+				--tag "$(OPENCODE_IMAGE_NAME):latest" \
+				--file opencode/Dockerfile \
+				opencode/; \
+		fi
 
 ## Tools
 #####################################################################
@@ -200,7 +234,7 @@ yaml-format: node_modules/.installed ## Format YAML files.
 #####################################################################
 
 .PHONY: lint
-lint: actionlint fixme markdownlint renovate-config-validator textlint yamllint zizmor ## Run all linters.
+lint: actionlint fixme hadolint markdownlint renovate-config-validator textlint yamllint zizmor ## Run all linters.
 
 .PHONY: actionlint
 actionlint: $(AQUA_ROOT_DIR)/.installed ## Runs the actionlint linter.
@@ -241,6 +275,27 @@ fixme: $(AQUA_ROOT_DIR)/.installed ## Check for outstanding FIXMEs.
 		todos \
 			--output "$${output}" \
 			--todo-types="FIXME,Fixme,fixme,BUG,Bug,bug,XXX,COMBAK"
+
+.PHONY: hadolint
+hadolint: $(AQUA_ROOT_DIR)/.installed ## Runs the hadolint linter.
+	@set -euo pipefail;\
+		files=$$( \
+			git ls-files --deduplicate \
+				'[Dd]ockerfile' \
+				'*/[Dd]ockerfile' \
+				'*.dockerfile' \
+				'[Cc]ontainerfile' \
+				'*/[Cc]ontainerfile' \
+				'*.containerfile' \
+				| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
+		); \
+		PATH="$(REPO_ROOT)/.bin/aqua-$(AQUA_VERSION):$(AQUA_ROOT_DIR)/bin:$${PATH}"; \
+		AQUA_ROOT_DIR="$(AQUA_ROOT_DIR)"; \
+		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+			hadolint -f checkstyle $${files}; \
+		else \
+			hadolint $${files}; \
+		fi
 
 .PHONY: markdownlint
 markdownlint: node_modules/.installed $(AQUA_ROOT_DIR)/.installed ## Runs the markdownlint linter.
