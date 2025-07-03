@@ -21,12 +21,15 @@ rules:
   spelling:
     language: "en"
     skipPatterns:
+      - "Claude"
+      - "Dockerfile"
       - "JSON" # JavaScript Object Notation
       - "LF" # Line Feed
       - "UTF" # Unicode Transformation Format
       - "gVisor" # Google Sandbox Runtime
       - "opencode" # AI coding agent, built for the terminal.
       - "/[Bb]ackticks/" # Whitespace
+      - "/[Ss]andboxing/"
       - "/[Ss]ubmodule/" # Submodule
       - "/[Ww]hitespace/" # Whitespace
 

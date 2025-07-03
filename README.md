@@ -8,9 +8,9 @@ intention is to provide a locked-down environment for coding assistants that
 allow them to be run in a secure manner that won't be able to do damage to the
 host system.
 
-## opencode
+## `opencode`
 
-The [opencode](https://github.com/sst/opencode) image can be run with the
+The [`opencode`](https://github.com/sst/opencode) image can be run with the
 following commands. The local state is stored in
 `~/.local/share/opencode-docker`.
 
@@ -46,9 +46,9 @@ docker run \
     "ghcr.io/ianlewis/opencode"
 ```
 
-## claude-code
+## `claude-code`
 
-The [claude-code](https://github.com/anthropics/claude-code) image can be run with the
+The [`claude-code`](https://github.com/anthropics/claude-code) image can be run with the
 following commands. The local state is stored in
 `~/.local/share/claude-code-docker`.
 

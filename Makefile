@@ -250,6 +250,7 @@ json-format: node_modules/.installed ## Format JSON files.
 		fi; \
 		./node_modules/.bin/prettier \
 			--write \
+			--no-error-on-unmatched-pattern \
 			$${files}
 
 .PHONY: md-format
@@ -266,6 +267,7 @@ md-format: node_modules/.installed ## Format Markdown files.
 		# NOTE: prettier uses .editorconfig for tab-width. \
 		./node_modules/.bin/prettier \
 			--write \
+			--no-error-on-unmatched-pattern \
 			$${files}
 
 .PHONY: yaml-format
@@ -281,6 +283,7 @@ yaml-format: node_modules/.installed ## Format YAML files.
 		fi; \
 		./node_modules/.bin/prettier \
 			--write \
+			--no-error-on-unmatched-pattern \
 			$${files}
 
 ## Linting

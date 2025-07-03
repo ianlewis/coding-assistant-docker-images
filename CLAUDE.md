@@ -1,12 +1,12 @@
 # Agent Guidelines
 
-This file provides guidance to Coding Agents like Claude Code (claude.ai/code)
+This file provides guidance to Coding Agents like Claude Code (`claude.ai/code`)
 when working with code in this repository.
 
 ## Project Overview
 
 This repository contains secure Docker images for various code assistants,
-including **OpenCode** and **Claude Code**. The primary focus is providing
+including **opencode** and **Claude Code**. The primary focus is providing
 locked-down containerized environments that allow code assistants to run
 securely without compromising the host system.
 
@@ -14,15 +14,15 @@ securely without compromising the host system.
 
 ### Two Main Images
 
-- **opencode/**: Contains the OpenCode AI assistant (opencode-ai package)
-- **claude-code/**: Contains the Claude Code assistant
-  (@anthropic-ai/claude-code package)
+- **`opencode/`**: Contains the opencode AI assistant (`opencode-ai` package)
+- **`claude-code/`**: Contains the Claude Code assistant
+  (`@anthropic-ai/claude-code` package)
 
 ### Security Features
 
 - Based on Node.js 22.17.0 slim image with pinned SHA256 digest
 - Runs with restricted permissions using `gosu`
-- Designed to work with gVisor (runsc) for additional sandboxing
+- Designed to work with gVisor (`runsc`) for additional sandboxing
 - All package versions are pinned with specific version numbers
 
 ### Directory Structure
@@ -36,7 +36,7 @@ securely without compromising the host system.
 ### Building Images
 
 ```bash
-# Build OpenCode image
+# Build opencode image
 make opencode-docker
 
 # Build Claude Code image
@@ -46,7 +46,7 @@ make claude-code-docker
 ### Running Agents
 
 ```bash
-# Run OpenCode agent
+# Run opencode agent
 make run-opencode
 
 # Run Claude Code agent
@@ -109,8 +109,8 @@ npm install --package-lock-only
 The repository uses GitHub Actions for CI/CD with comprehensive linting and
 security checks. All changes must pass:
 
-- Multiple linters (markdownlint, yamllint, textlint, actionlint, hadolint,
-  zizmor)
+- Multiple linters (`markdownlint`, `yamllint`, `textlint`, `actionlint`,
+  `hadolint`, `zizmor`)
 - License header validation
 - Security scanning
 - Build verification
