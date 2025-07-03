@@ -23,9 +23,6 @@ fi
 
 log "Running as user ID: ${USER_ID}, group ID: ${GROUP_ID}"
 
-# Create a link from the local data directory to the user's home directory.
-ln -sf /local "$(getent passwd ${USER_ID} | cut -d: -f6)/.local"
-
 # If we're not root (could happen with custom docker run commands)
 if [ "$USER_ID" != "0" ]; then
     # Create group if it doesn't exist
@@ -37,7 +34,17 @@ if [ "$USER_ID" != "0" ]; then
     if ! getent passwd "$USER_ID" >/dev/null 2>&1; then
         useradd -u "$USER_ID" -g "$GROUP_ID" -d /workspace -s /bin/bash appuser
     fi
+fi
 
+# Create a link from the local data directory to the user's home directory.
+user_home=$(getent passwd "$USER_ID" | cut -d: -f6)
+if [ -z "$user_home" ]; then
+    log "ERROR: User home directory not found."
+    exit 1
+fi
+ln -sf "${user_home}/local" "/.local"
+
+if [ "$USER_ID" != "0" ]; then
     log "Initialization complete, launching command as UID $USER_ID: $*"
     # Use gosu to drop privileges and run the command as the app directory owner
     exec gosu "$USER_ID:$GROUP_ID" bash -c "$@"

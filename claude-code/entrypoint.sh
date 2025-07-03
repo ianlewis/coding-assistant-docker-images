@@ -38,7 +38,20 @@ if [ "$USER_ID" != "0" ]; then
     if ! getent passwd "$USER_ID" >/dev/null 2>&1; then
         useradd -u "$USER_ID" -g "$GROUP_ID" -d /workspace -s /bin/bash appuser
     fi
+fi
 
+user_home=$(getent passwd "$USER_ID" | cut -d: -f6)
+if [ -z "$user_home" ]; then
+    log "ERROR: User home directory not found."
+    exit 1
+fi
+log "Creating symlinks in user home directory: ${user_home}"
+
+# Create a link from the local data directory to the user's home directory.
+ln -sf /claude.json "${user_home}/.claude.json"
+ln -sf /claude "${user_home}/.claude"
+
+if [ "$USER_ID" != "0" ]; then
     log "Initialization complete, launching command as UID $USER_ID: $*"
     # Use gosu to drop privileges and run the command as the app directory owner
     exec gosu "$USER_ID:$GROUP_ID" bash -c "$@"
