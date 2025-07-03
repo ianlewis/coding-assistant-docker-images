@@ -28,6 +28,7 @@ env:
 jobs:
   # This step builds our image, pushes it, and outputs the repo hash digest.
   build:
+    name: Build and push container image
     permissions:
       contents: read # for checking out the repo.
       packages: write # for pushing the image to the registry.

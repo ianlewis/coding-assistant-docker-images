@@ -26,3 +26,9 @@ rules:
 
         # Allow the use of the ossf/scorecard-action
         - ossf/scorecard-action
+
+        # Allow docker actions
+        - docker/setup-buildx-action
+        - docker/login-action
+        - docker/metadata-action
+        - docker/build-push-action
