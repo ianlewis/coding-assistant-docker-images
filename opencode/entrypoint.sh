@@ -14,11 +14,11 @@ GROUP_ID=$(stat -c %g /workspace)
 CONTAINER_USER_ID=${CONTAINER_USER_ID:-}
 
 # If USER_ID is root (0), and a non-root UID is specified via environment variable, use that instead
-if [ "$USER_ID" = "0" ] && [ -n "$CONTAINER_USER_ID" ] && [ "$CONTAINER_USER_ID" != "0" ]; then
-    USER_ID=$CONTAINER_USER_ID
+if [ "$USER_ID" = "0" ] && [ -n "${CONTAINER_USER_ID}" ] && [ "${CONTAINER_USER_ID}" != "0" ]; then
+    USER_ID=${CONTAINER_USER_ID}
     # If GROUP_ID is not specified, make it the same as USER_ID
     GROUP_ID=${CONTAINER_GROUP_ID:-$USER_ID}
-    log "Using user ID from environment variable: $USER_ID:$GROUP_ID"
+    log "Using user ID from environment variable: ${USER_ID}:${GROUP_ID}"
 fi
 
 log "Running as user ID: ${USER_ID}, group ID: ${GROUP_ID}"

@@ -290,7 +290,7 @@ yaml-format: node_modules/.installed ## Format YAML files.
 #####################################################################
 
 .PHONY: lint
-lint: actionlint fixme hadolint markdownlint renovate-config-validator textlint yamllint zizmor ## Run all linters.
+lint: actionlint fixme hadolint markdownlint renovate-config-validator shellcheck textlint yamllint zizmor ## Run all linters.
 
 .PHONY: actionlint
 actionlint: $(AQUA_ROOT_DIR)/.installed ## Runs the actionlint linter.
@@ -508,6 +508,44 @@ zizmor: .venv/.installed ## Runs the zizmor linter.
 			--pedantic \
 			--format plain \
 			$${files}
+
+
+.PHONY: shellcheck
+shellcheck: $(AQUA_ROOT_DIR)/.installed ## Runs the shellcheck linter.
+	@set -e;\
+		files=$$(git ls-files | xargs file | grep -e ':.*shell' | cut -d':' -f1); \
+		if [ "$${files}" == "" ]; then \
+			exit 0; \
+		fi; \
+		PATH="$(REPO_ROOT)/.bin/aqua-$(AQUA_VERSION):$(AQUA_ROOT_DIR)/bin:$${PATH}"; \
+		AQUA_ROOT_DIR="$(AQUA_ROOT_DIR)"; \
+		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+			exit_code=0; \
+			while IFS="" read -r p && [ -n "$$p" ]; do \
+				level=$$(echo "$$p" | jq -c '.level // empty' | tr -d '"'); \
+				file=$$(echo "$$p" | jq -c '.file // empty' | tr -d '"'); \
+				line=$$(echo "$$p" | jq -c '.line // empty' | tr -d '"'); \
+				endline=$$(echo "$$p" | jq -c '.endLine // empty' | tr -d '"'); \
+				col=$$(echo "$$p" | jq -c '.column // empty' | tr -d '"'); \
+				endcol=$$(echo "$$p" | jq -c '.endColumn // empty' | tr -d '"'); \
+				message=$$(echo "$$p" | jq -c '.message // empty' | tr -d '"'); \
+				exit_code=1; \
+				case $$level in \
+				"info") \
+					echo "::notice file=$${file},line=$${line},endLine=$${endline},col=$${col},endColumn=$${endcol}::$${message}"; \
+					;; \
+				"warning") \
+					echo "::warning file=$${file},line=$${line},endLine=$${endline},col=$${col},endColumn=$${endcol}::$${message}"; \
+					;; \
+				"error") \
+					echo "::error file=$${file},line=$${line},endLine=$${endline},col=$${col},endColumn=$${endcol}::$${message}"; \
+					;; \
+				esac; \
+			done <<< "$$(echo -n "$$files" | xargs shellcheck -f json $(SHELLCHECK_ARGS) | jq -c '.[]')"; \
+			exit "$${exit_code}"; \
+		else \
+			echo -n "$$files" | xargs shellcheck $(SHELLCHECK_ARGS); \
+		fi
 
 ## Maintenance
 #####################################################################
