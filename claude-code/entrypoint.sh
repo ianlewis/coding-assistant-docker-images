@@ -54,8 +54,8 @@ ln -sf /claude "${user_home}/.claude"
 if [ "${USER_ID}" != "0" ]; then
     log "Initialization complete, launching command as UID ${USER_ID}: $*"
     # Use gosu to drop privileges and run the command as the app directory owner
-    exec gosu "${USER_ID}:${GROUP_ID}" bash -c "$@"
+    exec gosu "${USER_ID}:${GROUP_ID}" bash -c "$*"
 else
     log "Initialization complete, launching command as root: $*"
-    exec bash -c "$@"
+    exec bash -c "$*"
 fi
