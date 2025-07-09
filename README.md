@@ -15,15 +15,15 @@ following commands. The local state is stored in
 `~/.local/share/opencode-docker`.
 
 ```bash
-XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
-mkdir -p "${XDG_DATA_HOME}/opencode-docker"
+OPENCODE_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/opencode-docker"
+mkdir -p "${OPENCODE_DATA_HOME}"
 docker run \
     --rm \
     --interactive \
     --tty \
     --name opencode \
     --volume "$(pwd):/workspace" \
-    --volume "${XDG_DATA_HOME}/opencode-docker:/local" \
+    --volume "${OPENCODE_DATA_HOME}:/local" \
     "ghcr.io/ianlewis/opencode"
 ```
 
@@ -33,8 +33,8 @@ configured](https://gvisor.dev/docs/user_guide/install/) as a runtime for
 Docker:
 
 ```bash
-XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
-mkdir -p "${XDG_DATA_HOME}/opencode-docker"
+OPENCODE_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/opencode-docker"
+mkdir -p "${OPENCODE_DATA_HOME}"
 docker run \
     --rm \
     --interactive \
@@ -42,7 +42,7 @@ docker run \
     --name opencode \
     --runtime runsc \
     --volume "$(pwd):/workspace" \
-    --volume "${XDG_DATA_HOME}/opencode-docker:/local" \
+    --volume "${OPENCODE_DATA_HOME}:/local" \
     "ghcr.io/ianlewis/opencode"
 ```
 
@@ -53,12 +53,12 @@ following commands. The local state is stored in
 `~/.local/share/claude-code-docker`.
 
 ```bash
-XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
-mkdir -p "${XDG_DATA_HOME}/claude-code-docker"; \
+CLAUDE_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/claude-code-docker"
+mkdir -p "${CLAUDE_DATA_HOME}"; \
 # Ensure the .claude.json file exists, as we need to bind mount it into the
 # container.
-if [ ! -f "${XDG_DATA_HOME}/claude-code-docker/claude.json" ]; then \
-    echo "{}" > "${XDG_DATA_HOME}/claude-code-docker/claude.json"; \
+if [ ! -f "${CLAUDE_DATA_HOME}/claude.json" ]; then \
+    echo "{}" > "${CLAUDE_DATA_HOME}/claude.json"; \
 fi; \
 docker run \
     --rm \
@@ -66,8 +66,8 @@ docker run \
     --tty \
     --name claude-code \
     --volume "$(pwd):/workspace" \
-    --volume "${XDG_DATA_HOME}/claude-code-docker/claude.json:/claude.json" \
-    --volume "${XDG_DATA_HOME}/claude-code-docker:/local" \
+    --volume "${CLAUDE_DATA_HOME}/claude.json:/claude.json" \
+    --volume "${CLAUDE_DATA_HOME}/claude" \
     "ghcr.io/ianlewis/claude-code"
 ```
 
@@ -77,12 +77,12 @@ configured](https://gvisor.dev/docs/user_guide/install/) as a runtime for
 Docker:
 
 ```bash
-XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
-mkdir -p "${XDG_DATA_HOME}/claude-code-docker"; \
+CLAUDE_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/claude-code-docker"
+mkdir -p "${CLAUDE_DATA_HOME}"; \
 # Ensure the .claude.json file exists, as we need to bind mount it into the
 # container.
-if [ ! -f "${XDG_DATA_HOME}/claude-code-docker/claude.json" ]; then \
-    echo "{}" > "${XDG_DATA_HOME}/claude-code-docker/claude.json"; \
+if [ ! -f "${CLAUDE_DATA_HOME}/claude.json" ]; then \
+    echo "{}" > "${CLAUDE_DATA_HOME}/claude.json"; \
 fi; \
 docker run \
     --rm \
@@ -91,7 +91,7 @@ docker run \
     --name claude-code \
     --runtime runsc \
     --volume "$(pwd):/workspace" \
-    --volume "${XDG_DATA_HOME}/claude-code-docker/claude.json:/claude.json" \
-    --volume "${XDG_DATA_HOME}/claude-code-docker:/local" \
+    --volume "${CLAUDE_DATA_HOME}/claude.json:/claude.json" \
+    --volume "${CLAUDE_DATA_HOME}:/claude" \
     "ghcr.io/ianlewis/claude-code"
 ```
