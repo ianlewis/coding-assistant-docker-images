@@ -30,6 +30,7 @@ jobs:
 
   # This step builds our image, pushes it, and outputs the repo hash digest.
   build-opencode:
+    name: Build opencode image
     permissions:
       contents: read # for checking out the repo.
       packages: write # for pushing the image to the registry.
@@ -84,6 +85,7 @@ jobs:
   # This step calls the container workflow to generate provenance and push it to
   # the container registry.
   provenance-opencode:
+    name: Generate SLSA provenance for opencode
     needs: [build-opencode]
     permissions:
       actions: read # for detecting the Github Actions environment.
@@ -100,6 +102,7 @@ jobs:
 
   # This step builds our image, pushes it, and outputs the repo hash digest.
   build-claude-code:
+    name: Build claude-code image
     permissions:
       contents: read # for checking out the repo.
       packages: write # for pushing the image to the registry.
@@ -154,6 +157,7 @@ jobs:
   # This step calls the container workflow to generate provenance and push it to
   # the container registry.
   provenance-claude-code:
+    name: Generate SLSA provenance for claude-code
     needs: [build-claude-code]
     permissions:
       actions: read # for detecting the Github Actions environment.
