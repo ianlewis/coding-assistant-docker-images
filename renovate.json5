@@ -55,8 +55,15 @@
     {
       groupName: "github-actions",
       matchManagers: ["github-actions"],
+      matchPackageNames: ["!slsa-framework/slsa-github-generator"],
       matchUpdateTypes: ["minor", "patch"],
       pinDigests: true,
+    },
+    {
+      groupName: "github-actions",
+      matchManagers: ["github-actions"],
+      matchPackageNames: ["slsa-framework/slsa-github-generator"],
+      pinDigests: false,
     },
     {
       groupName: "python",
