@@ -23,7 +23,6 @@ permissions: {}
 
 env:
   IMAGE_REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   # NOTE: We don't use a matrix strategy here because we need the outputs of
@@ -63,7 +62,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         with:
-          images: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.IMAGE_REGISTRY }}/opencode
 
       - name: Build and push Docker image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
@@ -80,7 +79,7 @@ jobs:
         run: |
           # NOTE: Set the image as an output because the `env` context is not
           # available to the inputs of a reusable workflow call.
-          echo "image=${IMAGE_REGISTRY}/${IMAGE_NAME}" >> "$GITHUB_OUTPUT"
+          echo "image=${IMAGE_REGISTRY}/opencode" >> "$GITHUB_OUTPUT"
 
   # This step calls the container workflow to generate provenance and push it to
   # the container registry.
@@ -133,7 +132,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         with:
-          images: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.IMAGE_REGISTRY }}/claude-code
 
       - name: Build and push Docker image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
@@ -150,7 +149,7 @@ jobs:
         run: |
           # NOTE: Set the image as an output because the `env` context is not
           # available to the inputs of a reusable workflow call.
-          echo "image=${IMAGE_REGISTRY}/${IMAGE_NAME}" >> "$GITHUB_OUTPUT"
+          echo "image=${IMAGE_REGISTRY}/claude-code" >> "$GITHUB_OUTPUT"
 
   # This step calls the container workflow to generate provenance and push it to
   # the container registry.
