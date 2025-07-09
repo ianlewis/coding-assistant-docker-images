@@ -14,10 +14,17 @@
 
 name: SLSA container generator
 
+# This workflow builds the opencode and claude-code images, generates SLSA
+# provenance for them, and pushes the images and provenance to the container
+# registry.
+
+# NOTE: Image tags are based on the package version, so image tags will not
+#       be immutable and will be updated with each merge to main.
+
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
-  release:
-    types: [created]
 
 permissions: {}
 
@@ -59,11 +66,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get package version
+        id: package
+        run: |
+          cd opencode
+          package_version=$(npm list opencode-ai --depth=0 --json | jq -r '.dependencies."opencode-ai".required')
+          echo "version=${package_version}" >> "$GITHUB_OUTPUT"
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         with:
           images: ${{ env.IMAGE_REGISTRY }}/opencode
+          tags: |
+            type=raw,value=${{ steps.package.outputs.version }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
@@ -131,11 +147,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get package version
+        id: package
+        run: |
+          cd claude-code
+          package_version=$(npm list @anthropic-ai/claude-code --depth=0 --json | jq -r '.dependencies."@anthropic-ai/claude-code".required')
+          echo "version=${package_version}" >> "$GITHUB_OUTPUT"
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         with:
           images: ${{ env.IMAGE_REGISTRY }}/claude-code
+          tags: |
+            type=raw,value=${{ steps.package.outputs.version }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
