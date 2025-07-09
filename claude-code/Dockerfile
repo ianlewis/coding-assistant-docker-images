@@ -53,10 +53,12 @@ RUN apt-get update && apt-get install -y \
 COPY package.json /app/package.json
 COPY package-lock.json /app/package-lock.json
 
+RUN npm install --prefix /app --no-audit --no-fund --omit=dev /app
+
 COPY entrypoint.sh /entrypoint.sh
 
-RUN npm install --prefix /app --no-audit --no-fund --omit=dev /app
+ENV PATH="/app/node_modules/.bin:$PATH"
 
 WORKDIR /workspace
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/app/node_modules/.bin/claude"]
+CMD ["claude"]
