@@ -18,6 +18,10 @@
     // Update version numbers in Makefile.
     // https://docs.renovatebot.com/presets-customManagers/#custommanagersmakefileversions
     "customManagers:makefileVersions",
+
+    // Update version numbers in Dockerfiles.
+    // https://docs.renovatebot.com/presets-customManagers/#custommanagersdockerfileversions
+    "customManagers:dockerfileVersions",
   ],
   // NOTE: Set the prHourlyLimit to 0 to disable the hourly limit. This is done
   // because we are using a monthly schedule and the default hourly limit of 2
@@ -39,36 +43,41 @@
   // Group various ecosystem updates. Security updates are always separate.
   packageRules: [
     {
-      matchUpdateTypes: ["minor", "patch"],
       groupName: "aqua",
       matchFileNames: [".aqua.yaml", ".aqua-checksums.yaml"],
+      matchUpdateTypes: ["minor", "patch"],
     },
     {
-      matchUpdateTypes: ["minor", "patch"],
       groupName: "makefile",
       matchFileNames: ["Makefile"],
+      matchUpdateTypes: ["minor", "patch"],
     },
     {
+      groupName: "github-actions",
       matchManagers: ["github-actions"],
       matchUpdateTypes: ["minor", "patch"],
-      groupName: "github-actions",
       pinDigests: true,
     },
     {
+      groupName: "python",
       matchManagers: ["pip_requirements"],
       matchUpdateTypes: ["minor", "patch"],
-      groupName: "python",
     },
     {
-      matchManagers: ["npm"],
-      matchDepTypes: ["dependencies"],
-      matchUpdateTypes: ["minor", "patch"],
       groupName: "npm",
+      matchDepTypes: ["dependencies"],
+      matchManagers: ["npm"],
+      matchUpdateTypes: ["minor", "patch"],
     },
     {
-      matchManagers: ["npm"],
-      matchDepTypes: ["devDependencies"],
       groupName: "npm dev",
+      matchDepTypes: ["devDependencies"],
+      matchManagers: ["npm"],
+    },
+    {
+      groupName: "dockerfile",
+      matchFileNames: ["**/Dockerfile"],
+      matchUpdateTypes: ["minor", "patch"],
     },
   ],
 }
