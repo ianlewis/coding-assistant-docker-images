@@ -5,9 +5,6 @@
     // https://docs.renovatebot.com/upgrade-best-practices/#whats-in-the-configbest-practices-preset
     "config:best-practices",
 
-    // Update dependencies monthly
-    "schedule:monthly",
-
     // Add DCO sign-off
     ":gitSignOff",
 
@@ -31,7 +28,6 @@
   // Security alerts/updates happen more frequently.
   vulnerabilityAlerts: {
     enabled: true,
-    schedule: "* 0-4 * * *",
   },
   osvVulnerabilityAlerts: true,
 
