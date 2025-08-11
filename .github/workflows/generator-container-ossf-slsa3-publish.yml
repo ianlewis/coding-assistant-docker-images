@@ -93,10 +93,12 @@ jobs:
 
       - name: Output image
         id: image
+        env:
+          REPO_OWNER: ${{ github.repository_owner }}
         run: |
           # NOTE: Set the image as an output because the `env` context is not
           # available to the inputs of a reusable workflow call.
-          echo "image=${IMAGE_REGISTRY}/opencode" >> "$GITHUB_OUTPUT"
+          echo "image=${IMAGE_REGISTRY}/${REPO_OWNER}/opencode" >> "$GITHUB_OUTPUT"
 
   # This step calls the container workflow to generate provenance and push it to
   # the container registry.
@@ -173,10 +175,12 @@ jobs:
 
       - name: Output image
         id: image
+        env:
+          REPO_OWNER: ${{ github.repository_owner }}
         run: |
           # NOTE: Set the image as an output because the `env` context is not
           # available to the inputs of a reusable workflow call.
-          echo "image=${IMAGE_REGISTRY}/claude-code" >> "$GITHUB_OUTPUT"
+          echo "image=${IMAGE_REGISTRY}/${REPO_OWNER}/claude-code" >> "$GITHUB_OUTPUT"
 
   # This step calls the container workflow to generate provenance and push it to
   # the container registry.
