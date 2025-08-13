@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # NOTE: the 22.17.0-slim image is based on Debian 12 (Bookworm).
-FROM node:22.17.0-slim@sha256:b04ce4ae4e95b522112c2e5c52f781471a5cbc3b594527bcddedee9bc48c03a0
+FROM node:22.18.0-slim@sha256:85a080b95b99079d3a07662fdd4be5b966603460205865f8f7a447955b3ea35c
 
 ENV PATH=/usr/local/go/bin:$PATH
 
