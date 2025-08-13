@@ -43,10 +43,7 @@ if ! command -v cosign >/dev/null 2>&1; then
     exit 1
 fi
 
-# renovate: datasource=docker depName=ghcr.io/ianlewis/claude-code versioning=loose
-CLAUDE_CODE_VERSION="1.0.72"
-CLAUDE_CODE_SHA="sha256:bd7c617589facd605bcda06f57a239d1763fdaa0f142c4bbd2d72d94b85c8333"
-CLAUDE_CODE_IMAGE="ghcr.io/ianlewis/claude-code:${CLAUDE_CODE_VERSION}@${CLAUDE_CODE_SHA}"
+CLAUDE_CODE_IMAGE="ghcr.io/ianlewis/claude-code"
 
 XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
 CLAUDE_DATA_HOME="${XDG_DATA_HOME}/claude-code-docker"

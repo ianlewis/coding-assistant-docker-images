@@ -43,10 +43,7 @@ if ! command -v cosign >/dev/null 2>&1; then
     exit 1
 fi
 
-# renovate: datasource=docker depName=ghcr.io/ianlewis/opencode versioning=loose
-OPENCODE_VERSION="0.4.14"
-OPENCODE_SHA="sha256:78d314d9bfe965e019644d20657c183ab6767da38ec654a1d37f2e69445b9cd8"
-OPENCODE_IMAGE="ghcr.io/ianlewis/opencode:${OPENCODE_VERSION}@${OPENCODE_SHA}"
+OPENCODE_IMAGE="ghcr.io/ianlewis/opencode"
 
 XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
 OPENCODE_DATA_HOME="${XDG_DATA_HOME}/opencode-docker"
