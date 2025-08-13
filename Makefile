@@ -36,7 +36,11 @@ AQUA_ROOT_DIR = $(REPO_ROOT)/.aqua
 OPENCODE_IMAGE_NAME ?= ghcr.io/ianlewis/opencode
 CLAUDECODE_IMAGE_NAME ?= ghcr.io/ianlewis/claude-code
 
+XDG_BIN ?= $(HOME)/.local/bin
 XDG_DATA_HOME ?= $(HOME)/.local/share
+
+## Commands
+#####################################################################
 
 # The help command prints targets in groups. Help documentation in the Makefile
 # uses comments with double hash marks (##). Documentation is printed by the
@@ -76,6 +80,12 @@ help: ## Print all Makefile targets (this message).
 					} \
 				}'
 
+install: ## Install agent launcher scripts.
+	@install \
+		-t "$(XDG_BIN)" \
+		bin/opencode \
+		bin/claude
+
 package-lock.json: package.json
 	@npm install --package-lock-only --no-audit --no-fund
 
@@ -108,7 +118,7 @@ $(AQUA_ROOT_DIR)/.installed: .aqua.yaml .bin/aqua-$(AQUA_VERSION)/aqua
 ## Agents
 #####################################################################
 
-run-opencode: opencode-docker ## Run opencode.
+run-opencode: opencode-docker ## Build and run opencode from source.
 	@set -euo pipefail; \
 		mkdir -p "$(XDG_DATA_HOME)/opencode-docker"; \
 		docker run \
@@ -120,7 +130,7 @@ run-opencode: opencode-docker ## Run opencode.
 			--volume "$(XDG_DATA_HOME)/opencode-docker:/local" \
 			"$(OPENCODE_IMAGE_NAME)"
 
-run-claude-code: claude-code-docker ## Run claude-code.
+run-claude-code: claude-code-docker ## Build and run Claude Code from source.
 	@set -euo pipefail; \
 		mkdir -p "$(XDG_DATA_HOME)/claude-code-docker"; \
 		if [ ! -f "$(XDG_DATA_HOME)/claude-code-docker/claude.json" ]; then \
@@ -149,7 +159,7 @@ opencode/package-lock.json: opencode/package.json
 		opencode/
 
 .PHONY: image
-opencode-docker: opencode/package-lock.json ## Build the opencode Docker image.
+opencode-docker: opencode/Dockerfile opencode/package-lock.json ## Build the opencode Docker image.
 	@set -euo pipefail; \
 		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 			docker build \
@@ -172,7 +182,7 @@ claude-code/package-lock.json: claude-code/package.json
 		--no-fund \
 		claude-code/
 
-claude-code-docker: opencode/package-lock.json ## Build the claude-code Docker image.
+claude-code-docker: claude-code/Dockerfile claude-code/package-lock.json ## Build the claude-code Docker image.
 	@set -euo pipefail; \
 		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 			docker build \
