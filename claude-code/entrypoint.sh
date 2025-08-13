@@ -23,10 +23,6 @@ fi
 
 log "Running as user ID: ${USER_ID}, group ID: ${GROUP_ID}"
 
-# Create a link from the local data directory to the user's home directory.
-ln -sf /claude.json "$(getent passwd "${USER_ID}" | cut -d: -f6)/.claude.json"
-ln -sf /claude "$(getent passwd "${USER_ID}" | cut -d: -f6)/.claude"
-
 # If we're not root (could happen with custom docker run commands)
 if [ "${USER_ID}" != "0" ]; then
     # Create group if it doesn't exist
