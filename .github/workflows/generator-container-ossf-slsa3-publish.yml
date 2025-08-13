@@ -79,6 +79,8 @@ jobs:
         with:
           images: ${{ env.IMAGE_REGISTRY }}/${{ github.repository_owner }}/opencode
           tags: |
+            # set latest tag for default branch
+            type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value=${{ steps.package.outputs.version }}
 
       - name: Build and push Docker image
@@ -161,6 +163,8 @@ jobs:
         with:
           images: ${{ env.IMAGE_REGISTRY }}/${{ github.repository_owner }}/claude-code
           tags: |
+            # set latest tag for default branch
+            type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value=${{ steps.package.outputs.version }}
 
       - name: Build and push Docker image
