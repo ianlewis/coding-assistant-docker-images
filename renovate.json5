@@ -5,6 +5,9 @@
     // https://docs.renovatebot.com/upgrade-best-practices/#whats-in-the-configbest-practices-preset
     "config:best-practices",
 
+    // Update dependencies monthly
+    "schedule:monthly",
+
     // Add DCO sign-off
     ":gitSignOff",
 
@@ -28,6 +31,7 @@
   // Security alerts/updates happen more frequently.
   vulnerabilityAlerts: {
     enabled: true,
+    schedule: "* 0-4 * * *",
   },
   osvVulnerabilityAlerts: true,
 
@@ -67,20 +71,22 @@
       matchUpdateTypes: ["minor", "patch"],
     },
     {
-      groupName: "npm",
-      matchDepTypes: ["dependencies"],
-      matchManagers: ["npm"],
-      matchUpdateTypes: ["minor", "patch"],
-    },
-    {
       groupName: "npm dev",
       matchDepTypes: ["devDependencies"],
       matchManagers: ["npm"],
     },
     {
+      groupName: "npm",
+      matchDepTypes: ["dependencies"],
+      matchManagers: ["npm"],
+      matchUpdateTypes: ["minor", "patch"],
+      schedule: ["at any time"],
+    },
+    {
       groupName: "dockerfile",
       matchFileNames: ["**/Dockerfile"],
       matchUpdateTypes: ["minor", "patch"],
+      schedule: "at any time",
     },
   ],
 }
