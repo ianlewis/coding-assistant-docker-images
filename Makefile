@@ -37,6 +37,7 @@ OPENCODE_IMAGE_NAME ?= ghcr.io/ianlewis/opencode
 CLAUDECODE_IMAGE_NAME ?= ghcr.io/ianlewis/claude-code
 
 XDG_BIN ?= $(HOME)/.local/bin
+XDG_CONFIG_HOME ?= $(HOME)/.config
 XDG_DATA_HOME ?= $(HOME)/.local/share
 
 ## Commands
@@ -82,6 +83,11 @@ help: ## Print all Makefile targets (this message).
 
 install: ## Install agent launcher scripts.
 	@install \
+		-D \
+		-t "$(XDG_CONFIG_HOME)/coding-assistant-docker-images" \
+		config/policy.cue
+	@install \
+		-D \
 		-t "$(XDG_BIN)" \
 		bin/opencode \
 		bin/claude
