@@ -18,9 +18,9 @@ FROM node:22.18.0-slim@sha256:85a080b95b99079d3a07662fdd4be5b966603460205865f8f7
 ENV PATH=/usr/local/go/bin:$PATH
 
 # renovate: datasource=golang-version depName=golang versioning=loose
-ENV GOLANG_VERSION=1.24.4
+ENV GOLANG_VERSION=1.25.0
 # renovate: datasource=go depName=golang.org/x/tools/gopls versioning=loose
-ENV GOPLS_VERSION=0.19.1
+ENV GOPLS_VERSION=0.20.0
 
 # Package versions
 # renovate: datasource=repology depName=debian_12/curl versioning=loose
