@@ -33,6 +33,7 @@ AQUA_CHECKSUM ?= $(AQUA_CHECKSUM.$(uname_s).$(uname_m))
 AQUA_URL = https://$(AQUA_REPO)/releases/download/$(AQUA_VERSION)/aqua_$(kernel)_$(arch).tar.gz
 AQUA_ROOT_DIR = $(REPO_ROOT)/.aqua
 
+BASE_IMAGE_NAME ?= ghcr.io/ianlewis/base
 OPENCODE_IMAGE_NAME ?= ghcr.io/ianlewis/opencode
 CLAUDECODE_IMAGE_NAME ?= ghcr.io/ianlewis/claude-code
 
@@ -156,6 +157,22 @@ run-claude-code: claude-code-docker ## Build and run Claude Code from source.
 ## Image
 #####################################################################
 
+.PHONY: base
+base: base/Dockerfile base/entrypoint.sh ## Build the opencode Docker image.
+	@set -euo pipefail; \
+		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+			docker build \
+				--progress=plain \
+				--tag "$(BASE_IMAGE_NAME)" \
+				--file base/Dockerfile \
+				base/; \
+		else \
+			docker build \
+				--tag "$(BASE_IMAGE_NAME)" \
+				--file base/Dockerfile \
+				base/; \
+		fi
+
 opencode/package-lock.json: opencode/package.json
 	@npm install \
 		--prefix opencode/ \
@@ -164,8 +181,8 @@ opencode/package-lock.json: opencode/package.json
 		--no-fund \
 		opencode/
 
-.PHONY: image
-opencode-docker: opencode/Dockerfile opencode/package-lock.json ## Build the opencode Docker image.
+.PHONY: opencode-docker
+opencode-docker: opencode/Dockerfile opencode/package-lock.json opencode/entrypoint.sh ## Build the opencode Docker image.
 	@set -euo pipefail; \
 		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 			docker build \
@@ -188,7 +205,8 @@ claude-code/package-lock.json: claude-code/package.json
 		--no-fund \
 		claude-code/
 
-claude-code-docker: claude-code/Dockerfile claude-code/package-lock.json ## Build the claude-code Docker image.
+.PHONY: claude-code-docker
+claude-code-docker: claude-code/Dockerfile claude-code/package-lock.json claude-code/entrypoint.sh ## Build the claude-code Docker image.
 	@set -euo pipefail; \
 		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 			docker build \
