@@ -33,9 +33,9 @@ ENV GCC_VERSION=4:12.2.0-3
 ENV GOSU_VERSION=1.14-1+b10
 # renovate: datasource=repology depName=debian_12/git versioning=loose
 ENV GIT_VERSION=1:2.39.5-0+deb12u2
-# renovate: datasource=repology depName=debian_12/libc6-dev versioning=loose
+# renovate: datasource=repology depName=debian_12/glibc versioning=loose
 ENV LIBC6_DEV_VERSION=2.36-9+deb12u10
-# renovate: datasource=repology depName=debian_12/make versioning=loose
+# renovate: datasource=repology depName=debian_12/make-dfsg versioning=loose
 ENV MAKE_VERSION=4.3-4.1
 # renovate: datasource=repology depName=debian_12/python3 versioning=loose
 ENV PYTHON3_VERSION=3.11.2-1+b1
