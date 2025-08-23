@@ -24,6 +24,9 @@ name: SLSA container generator
 on:
   push:
     branches: [main]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [main]
   workflow_dispatch:
 
 permissions: {}
@@ -37,7 +40,7 @@ jobs:
 
   # This step builds our image, pushes it, and outputs the repo hash digest.
   build-base:
-    name: Build base image
+    name: build-base
     permissions:
       contents: read # for checking out the repo.
       packages: write # for pushing the image to the registry.
@@ -105,6 +108,9 @@ jobs:
   provenance-base:
     name: Generate SLSA provenance for base
     needs: [build-base]
+    # generating provenance requires id-token write permissions which cannot be
+    # granted on pull request events.
+    if: github.event_name != 'pull_request'
     permissions:
       actions: read # for detecting the Github Actions environment.
       id-token: write # for creating OIDC tokens for signing.
@@ -119,7 +125,7 @@ jobs:
 
   # This step builds our image, pushes it, and outputs the repo hash digest.
   build-opencode:
-    name: Build opencode image
+    name: build-opencode
     permissions:
       contents: read # for checking out the repo.
       packages: write # for pushing the image to the registry.
@@ -196,6 +202,9 @@ jobs:
   provenance-opencode:
     name: Generate SLSA provenance for opencode
     needs: [build-opencode]
+    # generating provenance requires id-token write permissions which cannot be
+    # granted on pull request events.
+    if: github.event_name != 'pull_request'
     permissions:
       actions: read # for detecting the Github Actions environment.
       id-token: write # for creating OIDC tokens for signing.
@@ -210,7 +219,7 @@ jobs:
 
   # This step builds our image, pushes it, and outputs the repo hash digest.
   build-claude-code:
-    name: Build claude-code image
+    name: build-claude-code
     permissions:
       contents: read # for checking out the repo.
       packages: write # for pushing the image to the registry.
@@ -287,6 +296,9 @@ jobs:
   provenance-claude-code:
     name: Generate SLSA provenance for claude-code
     needs: [build-claude-code]
+    # generating provenance requires id-token write permissions which cannot be
+    # granted on pull request events.
+    if: github.event_name != 'pull_request'
     permissions:
       actions: read # for detecting the Github Actions environment.
       id-token: write # for creating OIDC tokens for signing.
