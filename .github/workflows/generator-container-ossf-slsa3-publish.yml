@@ -91,7 +91,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          path: base/Dockerfile
           context: base/
 
       - name: Output image
@@ -185,7 +184,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          path: opencode/Dockerfile
           context: opencode/
 
       - name: Output image
@@ -279,7 +277,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          path: claude-code/Dockerfile
           context: claude-code/
 
       - name: Output image
