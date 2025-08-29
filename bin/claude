@@ -72,4 +72,4 @@ docker run \
     --volume "$(pwd):/workspace" \
     --volume "${CLAUDE_DATA_HOME}/claude.json:/claude.json" \
     --volume "${CLAUDE_DATA_HOME}:/claude" \
-    "${CLAUDE_CODE_IMAGE}"
+    "${CLAUDE_CODE_IMAGE}" claude "$@"

@@ -65,4 +65,4 @@ docker run \
     --name opencode \
     --volume "$(pwd):/workspace" \
     --volume "${OPENCODE_DATA_HOME}:/local" \
-    "${OPENCODE_IMAGE}"
+    "${OPENCODE_IMAGE}" opencode "$@"
