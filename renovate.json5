@@ -18,10 +18,6 @@
     // Update version numbers in Makefile.
     // https://docs.renovatebot.com/presets-customManagers/#custommanagersmakefileversions
     "customManagers:makefileVersions",
-
-    // Update version numbers in Dockerfiles.
-    // https://docs.renovatebot.com/presets-customManagers/#custommanagersdockerfileversions
-    "customManagers:dockerfileVersions",
   ],
   // NOTE: Set the prHourlyLimit to 0 to disable the hourly limit. This is done
   // because we are using a monthly schedule and the default hourly limit of 2
@@ -43,12 +39,25 @@
   customManagers: [
     {
       customType: "regex",
-      managerFilePatterns: ["/^Dockerfile$/"],
+      managerFilePatterns: [
+        "/(^|/|\\.)([Dd]ocker|[Cc]ontainer)file$/",
+        "/(^|/)([Dd]ocker|[Cc]ontainer)file[^/]*$/",
+      ],
       matchStrings: [
         '#\\s*renovate:\\s*?(suite=(?<suite>.*?))?\\s*depName=(?<depName>.*?)?\\sENV .*?_VERSION="(?<currentValue>.*)"',
       ],
       registryUrlTemplate: "https://deb.debian.org/debian?suite={{#if suite }}{{suite}}{{else}}stable{{/if}}&components=main,contrib,non-free&binaryArch=amd64",
       datasourceTemplate: "deb",
+    },
+    {
+      customType: "regex",
+      managerFilePatterns: [
+        "/(^|/|\\.)([Dd]ocker|[Cc]ontainer)file$/",
+        "/(^|/)([Dd]ocker|[Cc]ontainer)file[^/]*$/",
+      ],
+      matchStrings: [
+        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s(?:ENV|ARG)\\s+[A-Za-z0-9_]+?_VERSION[ =][\"']?(?<currentValue>.+?)[\"']?\\s(?:ENV|ARG)\\s+[A-Za-z0-9_]+?_DIGEST[ =][\"']?(?<currentDigest>.+?)[\"']?\\s",
+      ],
     },
   ],
 
