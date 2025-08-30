@@ -56,7 +56,6 @@ if [ -z "${user_home}" ]; then
     log "ERROR: User home directory not found."
     exit 1
 fi
-ln -sf /local "${user_home}/.local"
 
 if [ -f /config.sh ]; then
     log "Sourcing /config.sh"
