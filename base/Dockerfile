@@ -17,11 +17,15 @@ FROM node:24.6.0-slim@sha256:2664422177c5319330770fc78532a87050cff031a4f60b0f844
 
 ENV PATH=/usr/local/go/bin:$PATH
 
+# renovate: datasource=golang-version depName=golang versioning=loose
+ENV GOLANG_VERSION=1.24.4
+ENV GOLANG_DIGEST=77e5da33bb72aeaef1ba4418b6fe511bc4d041873cbf82e5aa6318740df98717
+# renovate: datasource=go depName=golang.org/x/tools/gopls versioning=loose
+ENV GOPLS_VERSION=0.19.1
+
 # Package versions
 # renovate: suite=trixie depName=curl
 ENV CURL_VERSION=8.14.1-2
-# renovate: suite=trixie depName=g++
-ENV GPP_VERSION=4:14.2.0-1
 # renovate: suite=trixie depName=gcc
 ENV GCC_VERSION=4:14.2.0-1
 # renovate: suite=trixie depName=gosu
@@ -49,18 +53,31 @@ SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y \
     --no-install-recommends \
     curl=${CURL_VERSION} \
-    g++=${GPP_VERSION} \
+    g++=${GCC_VERSION} \
     gcc=${GCC_VERSION} \
     gosu=${GOSU_VERSION} \
     git=${GIT_VERSION} \
     libc6-dev=${LIBC6_DEV_VERSION} \
     make=${MAKE_VERSION} \
     python3=${PYTHON3_VERSION} \
+    python3-venv=${PYTHON3_VERSION} \
     python3-pip=${PYTHON3_PIP_VERSION} \
     wget=${WGET_VERSION} \
     zip=${ZIP_VERSION} \
     unzip=${UNZIP_VERSION} \
     && rm -rf /var/lib/apt/lists/*
+
+RUN url="https://dl.google.com/go/go${GOLANG_VERSION}.linux-amd64.tar.gz"; \
+    sha256="${GOLANG_DIGEST}"; \
+	wget --progress=dot:giga -O go.tgz.asc "${url}.asc"; \
+	wget --progress=dot:giga -O go.tgz "${url}" --progress=dot:giga; \
+	echo "${sha256} *go.tgz" | sha256sum -c -; \
+	tar -C /usr/local -xzf go.tgz; \
+	rm go.tgz; \
+    # smoke test \
+    go version; \
+    # install gopls \
+    go install "golang.org/x/tools/gopls@v${GOPLS_VERSION}";
 
 COPY entrypoint.sh /entrypoint.sh
 
