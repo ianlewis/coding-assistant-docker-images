@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+#
 # Copyright 2025 Ian Lewis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ghcr.io/ianlewis/coding-assistant-docker-images-base:latest@sha256:96ecdb5558e90500293589473df78337ba6ca9ef4660e1c3cee2568e82b10e33
+set -euo pipefail
 
-COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
+# Log function for better visibility
+log() {
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $1"
+}
 
-RUN npm install --prefix /app --no-audit --no-fund --omit=dev /app
+# NOTE: USER_ID,GROUP_ID set in entrypoint.sh
+user_home=$(getent passwd "${USER_ID}" | cut -d: -f6)
+if [ -z "$user_home" ]; then
+    log "ERROR: User home directory not found."
+    exit 1
+fi
 
-COPY config.sh /config.sh
-
-ENV PATH="/app/node_modules/.bin:$PATH"
-
-CMD ["opencode"]
+log "Creating symlinks in user home directory: ${user_home}"
+ln -sf /local "${user_home}/.local"

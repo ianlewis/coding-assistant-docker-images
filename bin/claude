@@ -63,6 +63,9 @@ cosign verify-attestation \
     --policy ~/.config/coding-assistant-docker-images/policy.cue \
     "${CLAUDE_CODE_IMAGE}"
 
+# Ensure we have the latest image
+docker pull "${CLAUDE_CODE_IMAGE}"
+
 docker run \
     --rm \
     --interactive \

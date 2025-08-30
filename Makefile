@@ -182,7 +182,7 @@ opencode/package-lock.json: opencode/package.json
 		opencode/
 
 .PHONY: opencode-docker
-opencode-docker: opencode/Dockerfile opencode/package-lock.json opencode/entrypoint.sh ## Build the opencode Docker image.
+opencode-docker: opencode/Dockerfile opencode/package-lock.json opencode/config.sh ## Build the opencode Docker image.
 	@set -euo pipefail; \
 		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 			docker build \
@@ -206,7 +206,7 @@ claude-code/package-lock.json: claude-code/package.json
 		claude-code/
 
 .PHONY: claude-code-docker
-claude-code-docker: claude-code/Dockerfile claude-code/package-lock.json claude-code/entrypoint.sh ## Build the claude-code Docker image.
+claude-code-docker: claude-code/Dockerfile claude-code/package-lock.json claude-code/config.sh ## Build the claude-code Docker image.
 	@set -euo pipefail; \
 		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 			docker build \
