@@ -34,6 +34,8 @@ ENV LIBC6_DEV_VERSION=2.36-9+deb12u10
 ENV MAKE_VERSION=4.3-4.1
 # renovate: datasource=repology depName=debian_12/python3 versioning=loose
 ENV PYTHON3_VERSION=3.11.2-1+b1
+# renovate: datasource=repology depName=debian_12/python3 versioning=loose
+ENV PYTHON3_VENV_VERSION=3.11.2-1+b1
 # renovate: datasource=repology depName=debian_12/python3-pip versioning=loose
 ENV PYTHON3_PIP_VERSION=23.0.1+dfsg-1
 # renovate: datasource=repology depName=debian_12/wget versioning=loose
@@ -57,6 +59,7 @@ RUN apt-get update && apt-get install -y \
     make=${MAKE_VERSION} \
     python3=${PYTHON3_VERSION} \
     python3-pip=${PYTHON3_PIP_VERSION} \
+    python3-venv=${PYTHON3_VENV_VERSION} \
     wget=${WGET_VERSION} \
     zip=${ZIP_VERSION} \
     unzip=${UNZIP_VERSION} \
