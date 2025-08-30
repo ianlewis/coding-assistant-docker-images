@@ -27,7 +27,9 @@ rules:
       - "LF" # Line Feed
       - "UTF" # Unicode Transformation Format
       - "gVisor" # Google Sandbox Runtime
+      - "npm" # Node Package Manager
       - "opencode" # AI coding agent, built for the terminal.
+      - "XDG" # X Desktop Group
       - "/[Bb]ackticks/" # Whitespace
       - "/[Ss]andboxing/"
       - "/[Ss]ubmodule/" # Submodule
