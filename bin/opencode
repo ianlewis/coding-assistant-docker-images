@@ -57,6 +57,9 @@ cosign verify-attestation \
     --policy ~/.config/coding-assistant-docker-images/policy.cue \
     "${OPENCODE_IMAGE}"
 
+# Ensure we have the latest image
+docker pull "${OPENCODE_IMAGE}"
+
 docker run \
     --rm \
     --interactive \
