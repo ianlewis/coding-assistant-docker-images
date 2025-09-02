@@ -31,9 +31,12 @@ export PATH="${HOME}/.local/bin:${PATH}"
 
 The following are required to run the images:
 
-- [Docker](https://docs.docker.com/engine/install/)
-- [gVisor](https://gvisor.dev/docs/user_guide/quick_start/docker/)
-- [cosign](https://docs.sigstore.dev/cosign/system_config/installation/)
+- [Docker](https://docs.docker.com/engine/install/): for running the container
+  images
+- [gVisor](https://gvisor.dev/docs/user_guide/quick_start/docker/): for
+  container runtime isolation
+- [cosign](https://docs.sigstore.dev/cosign/system_config/installation/): for
+  image verification
 
 ## Usage
 
@@ -43,7 +46,9 @@ Using the `opencode` launcher script is recommended. This will verify and run
 the latest `opencode` image with the correct parameters. The local state is
 stored in `~/.local/share/opencode-docker`.
 
-The launcher script will run the image with roughly the following command:
+The launcher script will run the image with roughly the following command. The
+project you wish to give access to `opencode` should be mounted to `/workspace`
+inside the container.
 
 ```bash
 OPENCODE_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/opencode-docker"
@@ -65,7 +70,9 @@ Using the `claude` launcher script is recommended. This will verify and run
 the latest `claude-code` image with the correct parameters. The local state is
 stored in `~/.local/share/claude-code-docker`.
 
-The launcher script will run the image with roughly the following command:
+The launcher script will run the image with roughly the following command. The
+project you wish to give access to `claude` should be mounted to `/workspace`
+inside the container.
 
 ```bash
 CLAUDE_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/claude-code-docker"

@@ -81,5 +81,4 @@ RUN url="https://dl.google.com/go/go${GOLANG_VERSION}.linux-amd64.tar.gz"; \
 
 COPY entrypoint.sh /entrypoint.sh
 
-WORKDIR /workspace
 ENTRYPOINT ["/entrypoint.sh"]

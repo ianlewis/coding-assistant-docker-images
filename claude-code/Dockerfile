@@ -17,10 +17,12 @@ FROM ghcr.io/ianlewis/coding-assistant-docker-images-base:latest@sha256:96ecdb55
 COPY package.json /app/package.json
 COPY package-lock.json /app/package-lock.json
 
-RUN npm install --prefix /app --no-audit --no-fund --omit=dev /app
+WORKDIR /app
+RUN npm clean-install --no-fund --omit=dev
 
 COPY config.sh /config.sh
 
 ENV PATH="/app/node_modules/.bin:$PATH"
 
+WORKDIR /workspace
 CMD ["claude"]
