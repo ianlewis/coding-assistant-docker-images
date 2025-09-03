@@ -18,7 +18,7 @@ FROM node:24.7.0-trixie-slim@sha256:fd07fc1ec74d77d4bbed8aa4c7df403dd8ce8979db35
 ENV PATH=/usr/local/go/bin:$PATH
 
 # renovate: datasource=golang-version depName=golang versioning=loose
-ENV GOLANG_VERSION=1.25.0
+ENV GOLANG_VERSION=1.25.1
 ENV GOLANG_DIGEST=2852af0cb20a13139b3448992e69b868e50ed0f8a1e5940ee1de9e19a123b613
 # renovate: datasource=go depName=golang.org/x/tools/gopls versioning=loose
 ENV GOPLS_VERSION=0.19.1
