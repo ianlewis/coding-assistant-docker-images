@@ -105,9 +105,9 @@
     },
     {
       groupName: "dockerfile",
-      matchFileNames: ["**/Dockerfile"],
+      matchFileNames: ["/(^|/|\\.)([Dd]ocker|[Cc]ontainer)file$/"],
       matchUpdateTypes: ["minor", "patch"],
-      schedule: "at any time",
+      schedule: ["at any time"],
     },
   ],
 }

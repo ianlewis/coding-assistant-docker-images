@@ -31,7 +31,7 @@ ENV GCC_VERSION=4:14.2.0-1
 # renovate: suite=trixie depName=gosu
 ENV GOSU_VERSION=1.17-3+b4
 # renovate: suite=trixie depName=git
-ENV GIT_VERSION=1:2.47.2-0.2
+ENV GIT_VERSION=1:2.47.3-0+deb13u1
 # renovate: suite=trixie depName=libc6-dev
 ENV LIBC6_DEV_VERSION=2.41-12
 # renovate: suite=trixie depName=make
