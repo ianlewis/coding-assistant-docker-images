@@ -19,7 +19,7 @@ ENV PATH=/usr/local/go/bin:$PATH
 
 # renovate: datasource=golang-version depName=golang versioning=loose
 ENV GOLANG_VERSION=1.25.1
-ENV GOLANG_DIGEST=2852af0cb20a13139b3448992e69b868e50ed0f8a1e5940ee1de9e19a123b613
+ENV GOLANG_DIGEST=7716a0d940a0f6ae8e1f3b3f4f36299dc53e31b16840dbd171254312c41ca12e
 # renovate: datasource=go depName=golang.org/x/tools/gopls versioning=loose
 ENV GOPLS_VERSION=0.19.1
 
