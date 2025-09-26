@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # NOTE: the trixie-slim images are based on Debian 13 (Trixie).
-FROM node:24.8.0-trixie-slim@sha256:a7f91166324d17fa1029718c876f3b02fb542e64d3cf40208ae6d31ff33c90c9
+FROM node:24.9.0-trixie-slim@sha256:bc408c23f5656a648783d70ae5212f8a34809c2bef7ef2fe03a5b6b58b6e05c4
 
 ENV PATH=/usr/local/go/bin:$PATH
 
