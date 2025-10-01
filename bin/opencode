@@ -65,7 +65,6 @@ docker run \
     --interactive \
     --tty \
     --runtime runsc \
-    --name opencode \
     --volume "$(pwd):/workspace" \
     --volume "${OPENCODE_DATA_HOME}:/local" \
     "${OPENCODE_IMAGE}@sha256:${verified_sha}" opencode "$@"

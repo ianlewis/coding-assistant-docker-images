@@ -77,7 +77,6 @@ docker run \
     --rm \
     --interactive \
     --tty \
-    --name claude-code \
     --runtime runsc \
     --volume "$(pwd):/workspace" \
     --volume "${CLAUDE_DATA_HOME}/claude.json:/claude.json" \
