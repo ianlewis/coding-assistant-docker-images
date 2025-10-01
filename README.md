@@ -35,8 +35,9 @@ The following are required to run the images:
   images
 - [gVisor](https://gvisor.dev/docs/user_guide/quick_start/docker/): for
   container runtime isolation
-- [cosign](https://docs.sigstore.dev/cosign/system_config/installation/): for
+- [`cosign`](https://docs.sigstore.dev/cosign/system_config/installation/): for
   image verification
+- [`jq`](https://stedolan.github.io/jq/download/): for parsing JSON
 
 ## Usage
 
