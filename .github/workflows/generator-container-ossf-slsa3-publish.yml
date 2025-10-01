@@ -169,7 +169,7 @@ jobs:
             # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
             # set the opencode package version as a tag
-            type=raw,value=${{ steps.package.outputs.version }}
+            type=raw,value=${{ steps.package.outputs.version }},enable={{is_default_branch}}
             # branch event
             type=ref,event=branch
             # tag event
@@ -262,7 +262,7 @@ jobs:
             # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
             # set the claude-code package version as a tag
-            type=raw,value=${{ steps.package.outputs.version }}
+            type=raw,value=${{ steps.package.outputs.version }},enable={{is_default_branch}}
             # branch event
             type=ref,event=branch
             # tag event
