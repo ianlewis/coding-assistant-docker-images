@@ -43,6 +43,13 @@ if ! command -v cosign >/dev/null 2>&1; then
     exit 1
 fi
 
+if ! command -v jq >/dev/null 2>&1; then
+    echo "jq is not installed. Please install jq first." >&2
+    echo "Please see this URL for installation instructions:" >&2
+    echo "https://jqlang.org/download/" >&2
+    exit 1
+fi
+
 OPENCODE_IMAGE="ghcr.io/ianlewis/opencode"
 
 XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
