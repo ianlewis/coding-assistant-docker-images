@@ -56,15 +56,22 @@ if [ ! -f "${CLAUDE_DATA_HOME}/claude.json" ]; then
     echo "{}" >"${CLAUDE_DATA_HOME}/claude.json"
 fi
 
-cosign verify-attestation \
+verified_sha=$(cosign verify-attestation \
     --type slsaprovenance \
     --certificate-oidc-issuer https://token.actions.githubusercontent.com \
     --certificate-identity-regexp '^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$' \
     --policy ~/.config/coding-assistant-docker-images/policy.cue \
-    "${CLAUDE_CODE_IMAGE}"
+    "${CLAUDE_CODE_IMAGE}" | jq -r '.payload' | base64 -d | jq -r '.subject[0].digest.sha256')
+
+if [ -z "${verified_sha}" ]; then
+    echo "Failed to verify the image signature." >&2
+    exit 1
+fi
+
+echo "Verified image: ${CLAUDE_CODE_IMAGE}:sha256:${verified_sha}"
 
 # Ensure we have the latest image
-docker pull "${CLAUDE_CODE_IMAGE}"
+docker pull "${CLAUDE_CODE_IMAGE}@sha256:${verified_sha}"
 
 docker run \
     --rm \
@@ -75,4 +82,4 @@ docker run \
     --volume "$(pwd):/workspace" \
     --volume "${CLAUDE_DATA_HOME}/claude.json:/claude.json" \
     --volume "${CLAUDE_DATA_HOME}:/claude" \
-    "${CLAUDE_CODE_IMAGE}" claude "$@"
+    "${CLAUDE_CODE_IMAGE}@sha256:${verified_sha}" claude "$@"
