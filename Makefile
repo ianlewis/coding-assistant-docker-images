@@ -83,15 +83,13 @@ help: ## Print all Makefile targets (this message).
 				}'
 
 install: ## Install agent launcher scripts.
-	@install \
-		-D \
-		-t "$(XDG_CONFIG_HOME)/coding-assistant-docker-images" \
-		config/policy.cue
-	@install \
-		-D \
-		-t "$(XDG_BIN)" \
-		bin/opencode \
-		bin/claude
+	@cp -f \
+		$(REPO_ROOT)/config/policy.cue \
+		$(XDG_CONFIG_HOME)/coding-assistant-docker-images/
+	@cp -f \
+		$(REPO_ROOT)/bin/opencode \
+		$(REPO_ROOT)/bin/claude \
+		$(XDG_BIN)
 
 package-lock.json: package.json
 	@npm install --package-lock-only --no-audit --no-fund
