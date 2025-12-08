@@ -25,7 +25,7 @@ ENV GOPLS_VERSION=0.19.1
 
 # Package versions
 # renovate: suite=trixie depName=curl
-ENV CURL_VERSION=8.14.1-2
+ENV CURL_VERSION=8.14.1-2+deb13u2
 # renovate: suite=trixie depName=gcc
 ENV GCC_VERSION=4:14.2.0-1
 # renovate: suite=trixie depName=gosu
