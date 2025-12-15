@@ -1,0 +1,62 @@
+# Copyright 2024 Ian Lewis
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: zizmor
+
+on:
+  workflow_call:
+
+permissions: {}
+
+concurrency:
+  group: zizmor-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  zizmor:
+    name: zizmor
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # Needed for private repositories.
+      security-events: write # Needed to upload SARIF results.
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        with:
+          submodules: true
+          persist-credentials: false
+
+      - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+        with:
+          python-version-file: ".python-version"
+
+      - name: zizmor
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: make zizmor
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: SARIF file
+          path: results.sarif
+          retention-days: 5
+
+      - name: Upload to code-scanning
+        # NOTE: Uploading SARIF requires GitHub Enterprise and GitHub Advanced Security license for private repositories.
+        # TODO: Remove the next line for private repositories with GitHub Advanced Security.
+        if: github.event.repository.private == false
+        uses: github/codeql-action/upload-sarif@cf1bb45a277cb3c205638b2cd5c984db1c46a412 # v4.31.7
+        with:
+          sarif_file: zizmor.sarif.json
+          category: zizmor

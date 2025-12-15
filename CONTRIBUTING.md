@@ -25,10 +25,10 @@ create an issue.
 
 ### Review the community guidelines and Code of Conduct
 
-All of my repositories follow [Google's Open Source Community Guidelines] and
-contributors are also expected to follow my [Code of Conduct]. Please be
-familiar with them. Please see the Code of Conduct about how to report instances
-of abusive, harassing, or otherwise unacceptable behavior.
+For all of my repositories contributors are also expected to follow my [Code of
+Conduct]. Please take a few minutes to read over it. Please see the Code of
+Conduct about how to report instances of abusive, harassing, or otherwise
+unacceptable behavior.
 
 ## Providing feedback
 
@@ -111,13 +111,13 @@ git add .
 ```
 
 Commit your code to your branch. For most repositories, messages should follow
-the [Conventional Commits] format but this isn't always required.
+the [Conventional Commits] format.
 
 Commits should include a [Developer Certificate of Origin] (DCO). This can be
-included automatically in commits using the `-s` flag.
+included automatically in commits using the `-s`/`--signoff` flag.
 
 ```shell
-git commit -sm "feat: My new feature"
+git commit --signoff -m "feat: My new feature"
 ```
 
 You can now push your changes to your fork.
@@ -158,10 +158,10 @@ Once you have finished you can mark the PR as "Ready for review".
 PRs perform number of [GitHub status checks] which run linters, tests, etc.
 These tests must all pass before a PR will be accepted. These tests are located
 in the [`.github/workflows`](.github/workflows) directory and begin with the
-prefix `pre-sumbit`.
+in the [`.github/workflows`](.github/workflows) directory.
 
-Most pull request status checks are run as pre-submit tests in the
-[`pre-submit.units.yml`] file.
+Most pull request status checks are run as status checks in the
+[`pull_request.tests.yml`] file.
 
 #### Code reviews
 
@@ -210,10 +210,12 @@ number MAJOR.MINOR.PATCH, increment the:
 
 ### Conventional Commits
 
-PR titles should be in [Conventional Commits] format. Usually this is required
-by not always.
+PR titles and commit messages should be in [Conventional Commits] format.
+Usually this is required by not always.
 
-In general, the following prefixes are supported:
+The following prefixes are supported and are checked using the
+[`@commitlint/config-conventional`](https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional)
+`commitlint` preset.
 
 1. `fix`: patches a bug
 2. `feat`: introduces a new feature
@@ -233,11 +235,10 @@ In general, the following prefixes are supported:
 [Security Policy]: SECURITY.md
 [Code of Conduct]: CODE_OF_CONDUCT.md
 [Developer Certificate of Origin]: https://en.wikipedia.org/wiki/Developer_Certificate_of_Origin
-[Google's Open Source Community Guidelines]: https://opensource.google/conduct/
 [Connecting to GitHub with SSH]: https://docs.github.com/en/authentication/connecting-to-github-with-ssh
 [pull request]: https://docs.github.com/pull-requests
 [About pull request reviews]: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews
 [Semantic Versioning]: https://semver.org/
 [Conventional Commits]: https://www.conventionalcommits.org/en/v1.0.0/
-[`pre-submit.units.yml`]: .github/workflows/pre-submit.units.yml
+[`pull_request.tests.yml`]: .github/workflows/pull_request.tests.yml
 [GitHub status checks]: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks

@@ -176,14 +176,15 @@ security checks. All changes must pass:
 - License header validation
 - Security scanning with OpenSSF Scorecard
 - Build verification
-- SLSA3 provenance generation for container images
+- SLSA Level 3 provenance generation for container images
 - Renovate dependency updates with automated PR creation
 
 ### CI/CD Workflows
 
 - **`pre-submit.units.yml`**: Main CI pipeline with linting and build
   verification
-- **`generator-container-ossf-slsa3-publish.yml`**: SLSA3 provenance generation
+- **`generator-container-ossf-slsa3-publish.yml`**: SLSA Level 3 provenance
+  generation
 - **`schedule.scorecard.yml`**: Weekly OpenSSF security scoring
 - **`schedule.stale.yml`**: Automatic stale issue management
 - **`schedule.issue-reopener.yml`**: Reopens issues when dependencies are
@@ -271,7 +272,9 @@ rarely in practice. Key `Makefile` targets can be reviewed with `make help`.
   nature
 - The images are published to `ghcr.io/ianlewis/opencode` and
   `ghcr.io/ianlewis/claude-code`
-- All Docker images are signed and include SLSA3 provenance for supply chain security
+- All Docker images are signed and include SLSA Level 3 provenance for supply
+  chain security
 - The repository maintains OpenSSF Scorecard rating for security best practices
 - Dependency updates are automated via Renovate with comprehensive testing
-- gVisor runtime (`runsc`) provides additional container isolation beyond standard Docker
+- gVisor runtime (`runsc`) provides additional container isolation beyond
+  standard Docker

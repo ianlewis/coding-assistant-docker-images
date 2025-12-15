@@ -25,19 +25,20 @@ on:
 # Declare default permissions as read only.
 permissions: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   analysis:
     name: Scorecards analysis
     runs-on: ubuntu-latest
     permissions:
-      # Needed to upload the results to code-scanning dashboard.
-      security-events: write
-      # Used to receive a badge. (Upcoming feature)
-      id-token: write
+      security-events: write # Needed to upload SARIF results.
+      id-token: write # Used to validate the scorecard results.
 
-      # Needed for private repositories.
-      contents: read
-      actions: read
+      contents: read # Needed for private repositories.
+      actions: read # Needed for private repositories.
       issues: read # To allow GraphQL ListCommits to work
       pull-requests: read # To allow GraphQL ListCommits to work
       checks: read # To detect SAST tools
@@ -77,7 +78,5 @@ jobs:
       - name: "Upload to code-scanning"
         uses: github/codeql-action/upload-sarif@1b168cd39490f61582a9beae412bb7057a6b2c4e # v4.31.8
         # NOTE: Uploading SARIF requires GitHub Enterprise and GitHub Advanced Security license for private repositories.
-        # TODO: Remove the next line for private repositories with GitHub Advanced Security.
-        if: github.event.repository.private == false
         with:
           sarif_file: results.sarif
