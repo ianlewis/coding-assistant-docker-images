@@ -1,6 +1,16 @@
 {
   "checksums": [
     {
+      "id": "github_release/github.com/checkmake/checkmake/0.2.2/checkmake-0.2.2.darwin.amd64",
+      "checksum": "AFAA325D2348043F9A60D3D7BA7803A0A54B760095EA03837C4DE357C75478EF",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/checkmake/checkmake/0.2.2/checkmake-0.2.2.linux.amd64",
+      "checksum": "BEDD033B06F2563809855EC2A9950C7A81ACEA6CD82937FD2F124E2C1C5FC3D5",
+      "algorithm": "sha256"
+    },
+    {
       "id": "github_release/github.com/hadolint/hadolint/v2.12.0/hadolint-Darwin-x86_64",
       "checksum": "2A5B7AFCAB91645C39A7CEBEFCD835B865F7488E69BE24567F433DFC3D41CD27",
       "algorithm": "sha256"
@@ -21,13 +31,28 @@
       "algorithm": "sha256"
     },
     {
-      "id": "github_release/github.com/checkmake/checkmake/0.2.2/checkmake-0.2.2.darwin.amd64",
-      "checksum": "AFAA325D2348043F9A60D3D7BA7803A0A54B760095EA03837C4DE357C75478EF",
+      "id": "github_release/github.com/hadolint/hadolint/v2.14.0/hadolint-linux-arm64",
+      "checksum": "331F1D3511B84A4F1E3D18D52FEC284723E4019552F4F47B19322A53CE9A40ED",
       "algorithm": "sha256"
     },
     {
-      "id": "github_release/github.com/checkmake/checkmake/0.2.2/checkmake-0.2.2.linux.amd64",
-      "checksum": "BEDD033B06F2563809855EC2A9950C7A81ACEA6CD82937FD2F124E2C1C5FC3D5",
+      "id": "github_release/github.com/hadolint/hadolint/v2.14.0/hadolint-linux-x86_64",
+      "checksum": "6BF226944684F56C84DD014E8B979D27425C0148F61B3BD99BCC6F39E9DC5A47",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/hadolint/hadolint/v2.14.0/hadolint-macos-arm64",
+      "checksum": "3625E2E9F43DCFE7BD38738A5F5520ED50CE39ED28485266E6803DD7BC197B10",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/hadolint/hadolint/v2.14.0/hadolint-macos-x86_64",
+      "checksum": "2B69A853433F1ECA522FFB921CD490BD1321424D03331FD8390F93B7FB4A02E9",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/hadolint/hadolint/v2.14.0/hadolint-windows-x86_64.exe",
+      "checksum": "8E0EE174F88EDB14F207A68430C7A53C2883ED509CDBDE9A3A26FFFA140FA5E4",
       "algorithm": "sha256"
     },
     {
@@ -341,6 +366,11 @@
       "algorithm": "sha512"
     },
     {
+      "id": "registries/github_content/github.com/aquaproj/aqua-registry/v4.398.0/registry.yaml",
+      "checksum": "7ECB8D2982D9147B59B8EE0FD7F01EEAEAA542BC9AD2A6E57E3FF250CB9FA8233347CC963ACC5BE4E0527B4E6967DA88613D99952B0BC42CCBE7C0FC60C562C5",
+      "algorithm": "sha512"
+    },
+    {
       "id": "registries/github_content/github.com/aquaproj/aqua-registry/v4.399.0/registry.yaml",
       "checksum": "DFBC63D519DB05196B401F933FDE8BF71722BACEDA3647601C0E0418DF6D7E6C12F49608D0ACBE53D2F50DA34CC68F2E1D722D8BA2257F72FECB6D0D53FECFDC",
       "algorithm": "sha512"
@@ -348,11 +378,6 @@
     {
       "id": "registries/github_content/github.com/aquaproj/aqua-registry/v4.400.0/registry.yaml",
       "checksum": "56A968A46F4C5AF4B3C6B8961DEAC4E09939E6F0B5F1CC7CD2AF56D6BF7BAAB32FE8D2F85EFFDD4695C0044C79A772908E97AD1F780990C0E909342A76D5C083",
-      "algorithm": "sha512"
-    },
-    {
-      "id": "registries/github_content/github.com/aquaproj/aqua-registry/v4.398.0/registry.yaml",
-      "checksum": "7ECB8D2982D9147B59B8EE0FD7F01EEAEAA542BC9AD2A6E57E3FF250CB9FA8233347CC963ACC5BE4E0527B4E6967DA88613D99952B0BC42CCBE7C0FC60C562C5",
       "algorithm": "sha512"
     },
     {
@@ -368,6 +393,11 @@
     {
       "id": "registries/github_content/github.com/aquaproj/aqua-registry/v4.439.0/registry.yaml",
       "checksum": "9237F032690C0457E435CDED5AB67B75B867F7738855CEAE93C938C3F1DD4773",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "registries/github_content/github.com/aquaproj/aqua-registry/v4.442.0/registry.yaml",
+      "checksum": "B033472F809D96FB9CA4C06268DFDAB28F9F506F87A4FD5B3412072CBDF8E4D0",
       "algorithm": "sha256"
     }
   ]
