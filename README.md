@@ -1,6 +1,6 @@
 # Code Assistant Docker Images
 
-[![tests](https://github.com/ianlewis/coding-assistant-docker-images/actions/workflows/pre-submit.units.yml/badge.svg)](https://github.com/ianlewis/coding-assistant-docker-images/actions/workflows/pre-submit.units.yml)
+[![tests](https://github.com/ianlewis/coding-assistant-docker-images/actions/workflows/pull_request.tests.yml/badge.svg)](https://github.com/ianlewis/coding-assistant-docker-images/actions/workflows/pull_request.tests.yml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/ianlewis/coding-assistant-docker-images/badge)](https://securityscorecards.dev/viewer/?uri=github.com%2Fianlewis%2Fcoding-assistant-docker-images)
 
 This repository contains Docker images for various code assistants. The
