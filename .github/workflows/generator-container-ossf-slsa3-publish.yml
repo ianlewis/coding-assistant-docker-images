@@ -61,10 +61,6 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
-        with:
-          # NOTE: Do not use the cached binary for buildx to avoid potential
-          # cache poisoning.
-          cache-binary: false
 
       - name: Authenticate Docker
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
@@ -282,6 +278,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           context: claude-code/
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Output image
         id: image
