@@ -21,71 +21,77 @@
 
 set -euo pipefail
 
-if ! command -v docker >/dev/null 2>&1; then
-    echo "Docker is not installed. Please install Docker first." >&2
-    echo "Please see this URL for installation instructions:" >&2
-    echo "Please see https://docs.docker.com/engine/install/" >&2
-    exit 1
-fi
+function _main() {
+    if ! command -v docker >/dev/null 2>&1; then
+        echo "Docker is not installed. Please install Docker first." >&2
+        echo "Please see this URL for installation instructions:" >&2
+        echo "Please see https://docs.docker.com/engine/install/" >&2
+        exit 1
+    fi
 
-runsc_path=$(docker system info --format '{{.Runtimes.runsc.Path}}')
-if [ -z "${runsc_path}" ]; then
-    echo "runsc runtime not found. Please ensure runsc is installed and configured." >&2
-    echo "Please see this URL for installation instructions:" >&2
-    echo "https://gvisor.dev/docs/user_guide/quick_start/docker/" >&2
-    exit 1
-fi
+    local runsc_path
+    runsc_path=$(docker system info --format '{{.Runtimes.runsc.Path}}')
+    if [ -z "${runsc_path}" ]; then
+        echo "runsc runtime not found. Please ensure runsc is installed and configured." >&2
+        echo "Please see this URL for installation instructions:" >&2
+        echo "https://gvisor.dev/docs/user_guide/quick_start/docker/" >&2
+        exit 1
+    fi
 
-if ! command -v cosign >/dev/null 2>&1; then
-    echo "cosign is not installed. Please install cosign first." >&2
-    echo "Please see this URL for installation instructions:" >&2
-    echo "https://docs.sigstore.dev/cosign/system_config/installation/" >&2
-    exit 1
-fi
+    if ! command -v cosign >/dev/null 2>&1; then
+        echo "cosign is not installed. Please install cosign first." >&2
+        echo "Please see this URL for installation instructions:" >&2
+        echo "https://docs.sigstore.dev/cosign/system_config/installation/" >&2
+        exit 1
+    fi
 
-if ! command -v jq >/dev/null 2>&1; then
-    echo "jq is not installed. Please install jq first." >&2
-    echo "Please see this URL for installation instructions:" >&2
-    echo "https://jqlang.org/download/" >&2
-    exit 1
-fi
+    if ! command -v jq >/dev/null 2>&1; then
+        echo "jq is not installed. Please install jq first." >&2
+        echo "Please see this URL for installation instructions:" >&2
+        echo "https://jqlang.org/download/" >&2
+        exit 1
+    fi
 
-CLAUDE_CODE_IMAGE="ghcr.io/ianlewis/claude-code"
+    CLAUDE_CODE_IMAGE=${CLAUDE_CODE_IMAGE:-"ghcr.io/ianlewis/claude-code"}
 
-XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
-CLAUDE_DATA_HOME="${XDG_DATA_HOME}/claude-code-docker"
+    XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
+    CLAUDE_DATA_HOME="${XDG_DATA_HOME}/claude-code-docker"
 
-mkdir -p "${CLAUDE_DATA_HOME}"
+    mkdir -p "${CLAUDE_DATA_HOME}"
 
-# Ensure the .claude.json file exists, as we need to bind mount it into the
-# container.
-if [ ! -f "${CLAUDE_DATA_HOME}/claude.json" ]; then
-    echo "{}" >"${CLAUDE_DATA_HOME}/claude.json"
-fi
+    # Ensure the .claude.json file exists, as we need to bind mount it into the
+    # container.
+    if [ ! -f "${CLAUDE_DATA_HOME}/claude.json" ]; then
+        echo "{}" >"${CLAUDE_DATA_HOME}/claude.json"
+    fi
 
-verified_sha=$(cosign verify-attestation \
-    --type slsaprovenance \
-    --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-    --certificate-identity-regexp '^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$' \
-    --policy ~/.config/coding-assistant-docker-images/policy.cue \
-    "${CLAUDE_CODE_IMAGE}" | jq -r '.payload' | base64 -d | jq -r '.subject[0].digest.sha256')
+    local verified_sha
+    verified_sha=$(cosign verify-attestation \
+        --type slsaprovenance \
+        --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+        --certificate-identity-regexp '^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$' \
+        --policy ~/.config/coding-assistant-docker-images/policy.cue \
+        "${CLAUDE_CODE_IMAGE}" | jq -r '.payload' | base64 -d | jq -r '.subject[0].digest.sha256')
 
-if [ -z "${verified_sha}" ]; then
-    echo "Failed to verify the image signature." >&2
-    exit 1
-fi
+    if [ -z "${verified_sha}" ]; then
+        echo "Failed to verify the image signature." >&2
+        exit 1
+    fi
 
-echo "Verified image: ${CLAUDE_CODE_IMAGE}:sha256:${verified_sha}"
+    echo "Verified image: ${CLAUDE_CODE_IMAGE}:sha256:${verified_sha}"
 
-# Ensure we have the latest image
-docker pull "${CLAUDE_CODE_IMAGE}@sha256:${verified_sha}"
+    # Ensure we have the latest image
+    docker pull "${CLAUDE_CODE_IMAGE}@sha256:${verified_sha}"
 
-docker run \
-    --rm \
-    --interactive \
-    --tty \
-    --runtime runsc \
-    --volume "$(pwd):/workspace" \
-    --volume "${CLAUDE_DATA_HOME}/claude.json:/claude.json" \
-    --volume "${CLAUDE_DATA_HOME}:/claude" \
-    "${CLAUDE_CODE_IMAGE}@sha256:${verified_sha}" claude "$@"
+    docker run \
+        --rm \
+        --interactive \
+        --tty \
+        --runtime runsc \
+        --volume "$(pwd):/workspace" \
+        --volume "${CLAUDE_DATA_HOME}/claude.json:/claude.json" \
+        --volume "${CLAUDE_DATA_HOME}:/claude" \
+        "${CLAUDE_CODE_IMAGE}@sha256:${verified_sha}" claude "$@"
+}
+
+_main "$@"
