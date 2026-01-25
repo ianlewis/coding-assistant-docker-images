@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ghcr.io/ianlewis/coding-assistant-docker-images-base:latest@sha256:96a2b830e21787667b4181df3fe69cc4084d882720f2c228704741342da26784
+FROM ghcr.io/ianlewis/coding-assistant-docker-images-base:latest@sha256:0410e46c210fb854173bb0a51413e2f8b0a9aba760c940efd1dbde5c7fd8ab2a
 
 COPY package.json /app/package.json
 COPY package-lock.json /app/package-lock.json
