@@ -13,12 +13,12 @@
 # limitations under the License.
 
 # NOTE: the trixie-slim images are based on Debian 13 (Trixie).
-FROM node:24.11.1-trixie-slim@sha256:4623e8ac1eb5f35b0a91b85424283c1b97a416a77375dfa6a2e9bfb0b2c351c9
+FROM node:24.13.0-trixie-slim@sha256:a16979bcaf12a2fd24888eb8e89874b11bd1038a3e3f1881c26a5e2b8fb92b5c
 
 ENV PATH=/usr/local/go/bin:$PATH
 
 # renovate: datasource=golang-version depName=golang versioning=loose
-ENV GOLANG_VERSION=1.25.5
+ENV GOLANG_VERSION=1.25.6
 ENV GOLANG_DIGEST=9e9b755d63b36acf30c12a9a3fc379243714c1c6d3dd72861da637f336ebb35b
 # renovate: datasource=go depName=golang.org/x/tools/gopls versioning=loose
 ENV GOPLS_VERSION=0.19.1
