@@ -13,7 +13,9 @@
 # limitations under the License.
 
 # NOTE: the trixie-slim images are based on Debian 13 (Trixie).
-FROM node:24.11.1-trixie-slim@sha256:4623e8ac1eb5f35b0a91b85424283c1b97a416a77375dfa6a2e9bfb0b2c351c9
+FROM --platform=$BUILDPLATFORM node:24.11.1-trixie-slim@sha256:4623e8ac1eb5f35b0a91b85424283c1b97a416a77375dfa6a2e9bfb0b2c351c9
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
 
 ENV PATH=/usr/local/go/bin:$PATH
 
