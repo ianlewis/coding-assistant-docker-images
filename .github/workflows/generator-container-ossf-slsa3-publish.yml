@@ -41,10 +41,30 @@ env:
 jobs:
   # NOTE: We don't use a matrix strategy here because we need the outputs of
   #       each build job.
+  check-changes:
+    name: Check for changes
+    permissions:
+      pull-requests: read # for checking out the PR diff.
+    runs-on: ubuntu-latest
+    outputs:
+      changes: ${{ steps.changes.outputs.changes }}
+    steps:
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        id: changes
+        with:
+          filters: |
+            base:
+              - 'base/**'
+            claude:
+              - 'claude-code/**'
+            opencode:
+              - 'opencode/**'
 
   # This step builds our image, pushes it, and outputs the repo hash digest.
   build-base:
     name: build-base
+    needs: [check-changes]
+    if: fromJSON(needs.check-changes.outputs.changes).base == 'true'
     permissions:
       contents: read # for checking out the repo.
       packages: write # for pushing the image to the registry.
@@ -137,6 +157,8 @@ jobs:
   # This step builds our image, pushes it, and outputs the repo hash digest.
   build-opencode:
     name: build-opencode
+    needs: [check-changes]
+    if: fromJSON(needs.check-changes.outputs.changes).opencode == 'true'
     permissions:
       contents: read # for checking out the repo.
       packages: write # for pushing the image to the registry.
@@ -238,6 +260,8 @@ jobs:
   # This step builds our image, pushes it, and outputs the repo hash digest.
   build-claude-code:
     name: build-claude-code
+    needs: [check-changes]
+    if: fromJSON(needs.check-changes.outputs.changes).claude == 'true'
     permissions:
       contents: read # for checking out the repo.
       packages: write # for pushing the image to the registry.
