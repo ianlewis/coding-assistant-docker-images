@@ -189,6 +189,9 @@ jobs:
             # pull request event
             type=ref,event=pr
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
+
       - name: Build and push Docker image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         id: build
@@ -199,7 +202,7 @@ jobs:
           context: opencode/
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
         env:
           SOURCE_DATE_EPOCH: ${{ steps.epoch.outputs.timestamp }}
 
@@ -287,6 +290,9 @@ jobs:
             # pull request event
             type=ref,event=pr
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
+
       - name: Build and push Docker image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         id: build
@@ -297,7 +303,7 @@ jobs:
           context: claude-code/
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
         env:
           SOURCE_DATE_EPOCH: ${{ steps.epoch.outputs.timestamp }}
 
