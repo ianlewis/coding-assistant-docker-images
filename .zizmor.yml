@@ -32,3 +32,7 @@ rules:
         - docker/login-action
         - docker/metadata-action
         - docker/build-push-action
+        - docker/setup-qemu-action
+
+        # Allow the use of dorny/paths-filter action
+        - dorny/paths-filter
