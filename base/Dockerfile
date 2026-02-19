@@ -14,6 +14,8 @@
 
 # NOTE: the trixie-slim images are based on Debian 13 (Trixie).
 FROM --platform=$BUILDPLATFORM node:24.13.0-trixie-slim@sha256:036dfa7e82a1e867b09248440a2b6635b3f8de557f69e60bac923a10c6e696a8
+ARG TARGETOS
+ARG TARGETARCH
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
@@ -21,7 +23,9 @@ ENV PATH=/usr/local/go/bin:$PATH
 
 # renovate: datasource=golang-version depName=golang versioning=loose
 ENV GOLANG_VERSION=1.25.7
-ENV GOLANG_DIGEST=9e9b755d63b36acf30c12a9a3fc379243714c1c6d3dd72861da637f336ebb35b
+ENV GOLANG_DIGEST_VAR_NAME=GOLANG_DIGEST_${TARGETOS}_${TARGETARCH}
+ENV GOLANG_DIGEST_linux_amd64=12e6d6a191091ae27dc31f6efc630e3a3b8ba409baf3573d955b196fdf086005
+ENV GOLANG_DIGEST_linux_arm64=ba611a53534135a81067240eff9508cd7e256c560edd5d8c2fef54f083c07129
 # renovate: datasource=go depName=golang.org/x/tools/gopls versioning=loose
 ENV GOPLS_VERSION=0.19.1
 
@@ -69,8 +73,8 @@ RUN apt-get update && apt-get install -y \
     unzip=${UNZIP_VERSION} \
     && rm -rf /var/lib/apt/lists/*
 
-RUN url="https://dl.google.com/go/go${GOLANG_VERSION}.linux-amd64.tar.gz"; \
-    sha256="${GOLANG_DIGEST}"; \
+RUN url="https://dl.google.com/go/go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz"; \
+    sha256="${!GOLANG_DIGEST_VAR_NAME}"; \
 	wget --progress=dot:giga -O go.tgz.asc "${url}.asc"; \
 	wget --progress=dot:giga -O go.tgz "${url}" --progress=dot:giga; \
 	echo "${sha256} *go.tgz" | sha256sum -c -; \
