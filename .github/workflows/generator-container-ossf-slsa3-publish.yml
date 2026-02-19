@@ -47,7 +47,9 @@ jobs:
       pull-requests: read # for checking out the PR diff.
     runs-on: ubuntu-latest
     outputs:
-      changes: ${{ steps.changes.outputs.changes }}
+      base: ${{ steps.changes.outputs.base }}
+      claude: ${{ steps.changes.outputs.claude }}
+      opencode: ${{ steps.changes.outputs.opencode }}
     steps:
       # NOTE: Checkout is required for paths-filter when the event is not
       #       pull_request.
@@ -71,7 +73,7 @@ jobs:
   build-base:
     name: build-base
     needs: [check-changes]
-    if: fromJSON(needs.check-changes.outputs.changes).base == 'true'
+    if: needs.check-changes.outputs.base == 'true'
     permissions:
       contents: read # for checking out the repo.
       packages: write # for pushing the image to the registry.
@@ -165,7 +167,7 @@ jobs:
   build-opencode:
     name: build-opencode
     needs: [check-changes]
-    if: fromJSON(needs.check-changes.outputs.changes).opencode == 'true'
+    if: needs.check-changes.outputs.opencode == 'true'
     permissions:
       contents: read # for checking out the repo.
       packages: write # for pushing the image to the registry.
@@ -268,7 +270,7 @@ jobs:
   build-claude-code:
     name: build-claude-code
     needs: [check-changes]
-    if: fromJSON(needs.check-changes.outputs.changes).claude == 'true'
+    if: needs.check-changes.outputs.claude == 'true'
     permissions:
       contents: read # for checking out the repo.
       packages: write # for pushing the image to the registry.
