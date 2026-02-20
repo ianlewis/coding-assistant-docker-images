@@ -237,13 +237,15 @@ run-claude-code: claude-code-docker ## Build and run Claude Code from source.
 base: base/Dockerfile base/entrypoint.sh ## Build the opencode Docker image.
 	@# bash \
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
-		docker build \
+		docker buildx build \
+			--platform=linux/amd64,linux/arm64 \
 			--progress=plain \
 			--tag "$(BASE_IMAGE_NAME)" \
 			--file base/Dockerfile \
 			base/; \
 	else \
-		docker build \
+		docker buildx build \
+			--platform=linux/amd64,linux/arm64 \
 			--tag "$(BASE_IMAGE_NAME)" \
 			--file base/Dockerfile \
 			base/; \
@@ -262,13 +264,15 @@ opencode/package-lock.json: opencode/package.json
 opencode-docker: opencode/Dockerfile opencode/package-lock.json opencode/config.sh ## Build the opencode Docker image.
 	@# bash \
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
-		docker build \
+		docker buildx build \
+			--platform=linux/amd64,linux/arm64 \
 			--progress=plain \
 			--tag "$(OPENCODE_IMAGE_NAME)" \
 			--file opencode/Dockerfile \
 			opencode/; \
 	else \
-		docker build \
+		docker buildx build \
+			--platform=linux/amd64,linux/arm64 \
 			--tag "$(OPENCODE_IMAGE_NAME)" \
 			--file opencode/Dockerfile \
 			opencode/; \
@@ -287,13 +291,15 @@ claude-code/package-lock.json: claude-code/package.json
 claude-code-docker: claude-code/Dockerfile claude-code/package-lock.json claude-code/config.sh ## Build the claude-code Docker image.
 	@# bash \
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
-		docker build \
+		docker buildx build \
+			--platform=linux/amd64,linux/arm64 \
 			--progress=plain \
 			--tag "$(CLAUDECODE_IMAGE_NAME)" \
 			--file claude-code/Dockerfile \
 			claude-code/; \
 	else \
-		docker build \
+		docker buildx build \
+			--platform=linux/amd64,linux/arm64 \
 			--tag "$(CLAUDECODE_IMAGE_NAME)" \
 			--file claude-code/Dockerfile \
 			claude-code/; \
