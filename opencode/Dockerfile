@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM --platform=$BUILDPLATFORM ghcr.io/ianlewis/coding-assistant-docker-images-base:latest@sha256:a1b328b0d3cc7ef73d92659ab8c90437473a88baa447cbf80a793871cfff2c68
+FROM ghcr.io/ianlewis/coding-assistant-docker-images-base:latest@sha256:a1b328b0d3cc7ef73d92659ab8c90437473a88baa447cbf80a793871cfff2c68
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
