@@ -189,17 +189,21 @@ test: lint ## Run all tests.
 .PHONY: install
 install: ## Install agent launcher scripts.
 	@# bash \
-	cp --preserve=mode -f \
+	cp -f \
 		$(REPO_ROOT)/config/policy.cue \
 		$(XDG_CONFIG_HOME)/coding-assistant-docker-images/; \
-	cp --preserve=mode -f \
+	cp -f \
 		$(REPO_ROOT)/bin/claude.bash \
 		$(XDG_BIN)/claude; \
-	cp --preserve=mode -f \
+	cp -f \
 		$(REPO_ROOT)/bin/codex.bash \
 		$(XDG_BIN)/codex; \
-	cp --preserve=mode -f \
+	cp -f \
 		$(REPO_ROOT)/bin/opencode.bash \
+		$(XDG_BIN)/opencode
+	chmod +x \
+		$(XDG_BIN)/claude \
+		$(XDG_BIN)/codex \
 		$(XDG_BIN)/opencode
 
 ## Agents
