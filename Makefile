@@ -57,8 +57,6 @@ CLAUDECODE_IMAGE_NAME ?= ghcr.io/ianlewis/claude-code
 CODEX_IMAGE_NAME ?= ghcr.io/ianlewis/codex
 OPENCODE_IMAGE_NAME ?= ghcr.io/ianlewis/opencode
 
-BUILDX_PLATFORM ?= linux/amd64,linux/arm64
-
 XDG_BIN ?= $(HOME)/.local/bin
 XDG_CONFIG_HOME ?= $(HOME)/.config
 XDG_DATA_HOME ?= $(HOME)/.local/share
@@ -232,6 +230,7 @@ run-codex: codex-docker ## Build and run codex from source.
 		--interactive \
 		--tty \
 		--name codex \
+		--runtime runsc \
 		--volume "$(REPO_ROOT):/workspace" \
 		--volume "$(XDG_DATA_HOME)/codex-docker:/codex" \
 		"$(CODEX_IMAGE_NAME)"
@@ -244,6 +243,7 @@ run-opencode: opencode-docker ## Build and run opencode from source.
 		--interactive \
 		--tty \
 		--name opencode \
+		--runtime runsc \
 		--volume "$(REPO_ROOT):/workspace" \
 		--volume "$(XDG_DATA_HOME)/opencode-docker:/local" \
 		"$(OPENCODE_IMAGE_NAME)"
@@ -256,7 +256,6 @@ base: base/Dockerfile base/entrypoint.sh ## Build the opencode Docker image.
 	@# bash \
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 		docker buildx build \
-			--platform="$(BUILDX_PLATFORM)" \
 			--output type=docker \
 			--progress=plain \
 			--tag "$(BASE_IMAGE_NAME)" \
@@ -264,7 +263,6 @@ base: base/Dockerfile base/entrypoint.sh ## Build the opencode Docker image.
 			base/; \
 	else \
 		docker buildx build \
-			--platform="$(BUILDX_PLATFORM)" \
 			--output type=docker \
 			--tag "$(BASE_IMAGE_NAME)" \
 			--file base/Dockerfile \
@@ -285,7 +283,6 @@ claude-code-docker: claude-code/Dockerfile claude-code/package-lock.json claude-
 	@# bash \
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 		docker buildx build \
-			--platform="$(BUILDX_PLATFORM)" \
 			--output type=docker \
 			--progress=plain \
 			--tag "$(CLAUDECODE_IMAGE_NAME)" \
@@ -293,7 +290,6 @@ claude-code-docker: claude-code/Dockerfile claude-code/package-lock.json claude-
 			claude-code/; \
 	else \
 		docker buildx build \
-			--platform="$(BUILDX_PLATFORM)" \
 			--output type=docker \
 			--tag "$(CLAUDECODE_IMAGE_NAME)" \
 			--file claude-code/Dockerfile \
@@ -314,7 +310,6 @@ codex-docker: codex/Dockerfile codex/package-lock.json codex/config.sh ## Build 
 	@# bash \
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 		docker buildx build \
-			--platform="$(BUILDX_PLATFORM)" \
 			--output type=docker \
 			--progress=plain \
 			--tag "$(CODEX_IMAGE_NAME)" \
@@ -322,7 +317,6 @@ codex-docker: codex/Dockerfile codex/package-lock.json codex/config.sh ## Build 
 			codex/; \
 	else \
 		docker buildx build \
-			--platform="$(BUILDX_PLATFORM)" \
 			--output type=docker \
 			--tag "$(CODEX_IMAGE_NAME)" \
 			--file codex/Dockerfile \
@@ -343,14 +337,14 @@ opencode-docker: opencode/Dockerfile opencode/package-lock.json opencode/config.
 	@# bash \
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 		docker buildx build \
-			--platform=linux/amd64,linux/arm64 \
+			--output type=docker \
 			--progress=plain \
 			--tag "$(OPENCODE_IMAGE_NAME)" \
 			--file opencode/Dockerfile \
 			opencode/; \
 	else \
 		docker buildx build \
-			--platform=linux/amd64,linux/arm64 \
+			--output type=docker \
 			--tag "$(OPENCODE_IMAGE_NAME)" \
 			--file opencode/Dockerfile \
 			opencode/; \

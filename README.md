@@ -82,13 +82,13 @@ project you wish to give access to `codex` should be mounted to `/workspace`
 inside the container.
 
 ```bash
-CODEX_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/claude-code-docker"
+CODEX_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/codex-docker"
 mkdir -p "${CODEX_DATA_HOME}"; \
 docker run \
     --rm \
     --interactive \
-    --tty \
-    --name claude-code \
+    --tty
+    --name codex \
     --runtime runsc \
     --volume "$(pwd):/workspace" \
     --volume "${CODEX_DATA_HOME}:/codex" \

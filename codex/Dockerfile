@@ -16,7 +16,6 @@ FROM ghcr.io/ianlewis/coding-assistant-docker-images-base:latest@sha256:a1b328b0
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
-
 COPY package.json /app/package.json
 COPY package-lock.json /app/package-lock.json
 

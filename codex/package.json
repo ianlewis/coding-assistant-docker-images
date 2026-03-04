@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "@openai/codex": "^0.107.0"
+    "@openai/codex": "0.107.0"
   }
 }
