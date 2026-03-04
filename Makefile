@@ -53,8 +53,11 @@ AWK := $(shell command -v gawk 2>/dev/null || command -v awk 2>/dev/null)
 MKTEMP := $(shell command -v gmktemp 2>/dev/null || command -v mktemp 2>/dev/null)
 
 BASE_IMAGE_NAME ?= ghcr.io/ianlewis/base
-OPENCODE_IMAGE_NAME ?= ghcr.io/ianlewis/opencode
 CLAUDECODE_IMAGE_NAME ?= ghcr.io/ianlewis/claude-code
+CODEX_IMAGE_NAME ?= ghcr.io/ianlewis/codex
+OPENCODE_IMAGE_NAME ?= ghcr.io/ianlewis/opencode
+
+BUILDX_PLATFORM ?= linux/amd64,linux/arm64
 
 XDG_BIN ?= $(HOME)/.local/bin
 XDG_CONFIG_HOME ?= $(HOME)/.config
@@ -195,23 +198,14 @@ install: ## Install agent launcher scripts.
 		$(REPO_ROOT)/bin/claude.bash \
 		$(XDG_BIN)/claude; \
 	cp --preserve=mode -f \
+		$(REPO_ROOT)/bin/codex.bash \
+		$(XDG_BIN)/codex; \
+	cp --preserve=mode -f \
 		$(REPO_ROOT)/bin/opencode.bash \
 		$(XDG_BIN)/opencode
 
 ## Agents
 #####################################################################
-
-run-opencode: opencode-docker ## Build and run opencode from source.
-	@# bash \
-	mkdir -p "$(XDG_DATA_HOME)/opencode-docker"; \
-	docker run \
-		--rm \
-		--interactive \
-		--tty \
-		--name opencode \
-		--volume "$(REPO_ROOT):/workspace" \
-		--volume "$(XDG_DATA_HOME)/opencode-docker:/local" \
-		"$(OPENCODE_IMAGE_NAME)"
 
 run-claude-code: claude-code-docker ## Build and run Claude Code from source.
 	@# bash \
@@ -230,6 +224,30 @@ run-claude-code: claude-code-docker ## Build and run Claude Code from source.
 		--volume "$(XDG_DATA_HOME)/claude-code-docker:/claude" \
 		"$(CLAUDECODE_IMAGE_NAME)"
 
+run-codex: codex-docker ## Build and run codex from source.
+	@# bash \
+	mkdir -p "$(XDG_DATA_HOME)/codex-docker"; \
+	docker run \
+		--rm \
+		--interactive \
+		--tty \
+		--name codex \
+		--volume "$(REPO_ROOT):/workspace" \
+		--volume "$(XDG_DATA_HOME)/codex-docker:/codex" \
+		"$(CODEX_IMAGE_NAME)"
+
+run-opencode: opencode-docker ## Build and run opencode from source.
+	@# bash \
+	mkdir -p "$(XDG_DATA_HOME)/opencode-docker"; \
+	docker run \
+		--rm \
+		--interactive \
+		--tty \
+		--name opencode \
+		--volume "$(REPO_ROOT):/workspace" \
+		--volume "$(XDG_DATA_HOME)/opencode-docker:/local" \
+		"$(OPENCODE_IMAGE_NAME)"
+
 ## Image
 #####################################################################
 
@@ -238,17 +256,77 @@ base: base/Dockerfile base/entrypoint.sh ## Build the opencode Docker image.
 	@# bash \
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 		docker buildx build \
-			--platform=linux/amd64,linux/arm64 \
+			--platform="$(BUILDX_PLATFORM)" \
+			--output type=docker \
 			--progress=plain \
 			--tag "$(BASE_IMAGE_NAME)" \
 			--file base/Dockerfile \
 			base/; \
 	else \
 		docker buildx build \
-			--platform=linux/amd64,linux/arm64 \
+			--platform="$(BUILDX_PLATFORM)" \
+			--output type=docker \
 			--tag "$(BASE_IMAGE_NAME)" \
 			--file base/Dockerfile \
 			base/; \
+	fi
+
+claude-code/package-lock.json: claude-code/package.json
+	@# bash \
+	npm install \
+		--prefix claude-code/ \
+		--package-lock-only \
+		--no-audit \
+		--no-fund \
+		claude-code/
+
+.PHONY: claude-code-docker
+claude-code-docker: claude-code/Dockerfile claude-code/package-lock.json claude-code/config.sh ## Build the claude-code Docker image.
+	@# bash \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+		docker buildx build \
+			--platform="$(BUILDX_PLATFORM)" \
+			--output type=docker \
+			--progress=plain \
+			--tag "$(CLAUDECODE_IMAGE_NAME)" \
+			--file claude-code/Dockerfile \
+			claude-code/; \
+	else \
+		docker buildx build \
+			--platform="$(BUILDX_PLATFORM)" \
+			--output type=docker \
+			--tag "$(CLAUDECODE_IMAGE_NAME)" \
+			--file claude-code/Dockerfile \
+			claude-code/; \
+	fi
+
+codex/package-lock.json: codex/package.json
+	@# bash \
+	npm install \
+		--prefix codex/ \
+		--package-lock-only \
+		--no-audit \
+		--no-fund \
+		codex/
+
+.PHONY: codex-docker
+codex-docker: codex/Dockerfile codex/package-lock.json codex/config.sh ## Build the codex Docker image.
+	@# bash \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+		docker buildx build \
+			--platform="$(BUILDX_PLATFORM)" \
+			--output type=docker \
+			--progress=plain \
+			--tag "$(CODEX_IMAGE_NAME)" \
+			--file codex/Dockerfile \
+			codex/; \
+	else \
+		docker buildx build \
+			--platform="$(BUILDX_PLATFORM)" \
+			--output type=docker \
+			--tag "$(CODEX_IMAGE_NAME)" \
+			--file codex/Dockerfile \
+			codex/; \
 	fi
 
 opencode/package-lock.json: opencode/package.json
@@ -278,32 +356,6 @@ opencode-docker: opencode/Dockerfile opencode/package-lock.json opencode/config.
 			opencode/; \
 	fi
 
-claude-code/package-lock.json: claude-code/package.json
-	@# bash \
-	npm install \
-		--prefix claude-code/ \
-		--package-lock-only \
-		--no-audit \
-		--no-fund \
-		claude-code/
-
-.PHONY: claude-code-docker
-claude-code-docker: claude-code/Dockerfile claude-code/package-lock.json claude-code/config.sh ## Build the claude-code Docker image.
-	@# bash \
-	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
-		docker buildx build \
-			--platform=linux/amd64,linux/arm64 \
-			--progress=plain \
-			--tag "$(CLAUDECODE_IMAGE_NAME)" \
-			--file claude-code/Dockerfile \
-			claude-code/; \
-	else \
-		docker buildx build \
-			--platform=linux/amd64,linux/arm64 \
-			--tag "$(CLAUDECODE_IMAGE_NAME)" \
-			--file claude-code/Dockerfile \
-			claude-code/; \
-	fi
 
 ## Formatting
 #####################################################################

@@ -48,8 +48,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       base: ${{ steps.changes.outputs.base }}
-      claude: ${{ steps.changes.outputs.claude }}
       opencode: ${{ steps.changes.outputs.opencode }}
+      claude: ${{ steps.changes.outputs.claude }}
+      codex: ${{ steps.changes.outputs.codex }}
     steps:
       # NOTE: Checkout is required for paths-filter when the event is not
       #       pull_request.
@@ -66,6 +67,8 @@ jobs:
               - 'base/**'
             claude:
               - 'claude-code/**'
+            codex:
+              - 'codex/**'
             opencode:
               - 'opencode/**'
 
@@ -159,6 +162,109 @@ jobs:
     with:
       image: ${{ needs.build-base.outputs.image }}
       digest: ${{ needs.build-base.outputs.digest }}
+      registry-username: ${{ github.actor }}
+    secrets:
+      registry-password: ${{ secrets.GITHUB_TOKEN }}
+
+  # This step builds our image, pushes it, and outputs the repo hash digest.
+  build-codex:
+    name: build-codex
+    needs: [check-changes]
+    if: needs.check-changes.outputs.codex == 'true'
+    permissions:
+      contents: read # for checking out the repo.
+      packages: write # for pushing the image to the registry.
+    outputs:
+      image: ${{ steps.image.outputs.image }}
+      digest: ${{ steps.build.outputs.digest }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          submodules: true
+          persist-credentials: false
+
+      - name: Get source epoch time
+        id: epoch
+        run: echo "timestamp=$(git log -1 --pretty=%ct codex/)" >> "${GITHUB_OUTPUT}"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+
+      - name: Authenticate Docker
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get package version
+        id: package
+        run: |
+          cd codex
+          package_version=$(npm list --depth=1 --json | jq -r '.dependencies."@openai/codex".required')
+          echo "version=${package_version}" >> "$GITHUB_OUTPUT"
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
+        with:
+          images: ${{ env.IMAGE_REGISTRY }}/${{ github.repository_owner }}/codex
+          tags: |
+            # set latest tag for default branch
+            type=raw,value=latest,enable={{is_default_branch}}
+            # set the codex package version as a tag
+            type=raw,value=${{ steps.package.outputs.version }},enable={{is_default_branch}}
+            # branch event
+            type=ref,event=branch
+            # tag event
+            type=ref,event=tag
+            # pull request event
+            type=ref,event=pr
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        id: build
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          context: codex/
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+        env:
+          SOURCE_DATE_EPOCH: ${{ steps.epoch.outputs.timestamp }}
+
+      - name: Output image
+        id: image
+        env:
+          REPO_OWNER: ${{ github.repository_owner }}
+        run: |
+          # NOTE: Set the image as an output because the `env` context is not
+          # available to the inputs of a reusable workflow call.
+          echo "image=${IMAGE_REGISTRY}/${REPO_OWNER}/codex" >> "$GITHUB_OUTPUT"
+
+  # This step calls the container workflow to generate provenance and push it to
+  # the container registry.
+  provenance-codex:
+    name: Generate SLSA provenance for codex
+    needs: [build-codex]
+    # generating provenance requires id-token write permissions which cannot be
+    # granted on pull request events.
+    if: github.event_name != 'pull_request'
+    permissions:
+      actions: read # for detecting the Github Actions environment.
+      id-token: write # for creating OIDC tokens for signing.
+      packages: write # for uploading attestations.
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
+    with:
+      image: ${{ needs.build-codex.outputs.image }}
+      digest: ${{ needs.build-codex.outputs.digest }}
       registry-username: ${{ github.actor }}
     secrets:
       registry-password: ${{ secrets.GITHUB_TOKEN }}

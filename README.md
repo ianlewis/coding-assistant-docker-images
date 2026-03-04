@@ -41,30 +41,6 @@ The following are required to run the images:
 
 ## Usage
 
-### `opencode`
-
-Using the `opencode` launcher script is recommended. This will verify and run
-the latest `opencode` image with the correct parameters. The local state is
-stored in `~/.local/share/opencode-docker`.
-
-The launcher script will run the image with roughly the following command. The
-project you wish to give access to `opencode` should be mounted to `/workspace`
-inside the container.
-
-```bash
-OPENCODE_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/opencode-docker"
-mkdir -p "${OPENCODE_DATA_HOME}"
-docker run \
-    --rm \
-    --interactive \
-    --tty \
-    --name opencode \
-    --runtime runsc \
-    --volume "$(pwd):/workspace" \
-    --volume "${OPENCODE_DATA_HOME}:/local" \
-    "ghcr.io/ianlewis/opencode"
-```
-
 ## `claude-code`
 
 Using the `claude` launcher script is recommended. This will verify and run
@@ -93,4 +69,52 @@ docker run \
     --volume "${CLAUDE_DATA_HOME}/claude.json:/claude.json" \
     --volume "${CLAUDE_DATA_HOME}:/claude" \
     "ghcr.io/ianlewis/claude-code"
+```
+
+## `codex`
+
+Using the `codex` launcher script is recommended. This will verify and run
+the latest `codex` image with the correct parameters. The local state is
+stored in `~/.local/share/codex-docker`.
+
+The launcher script will run the image with roughly the following command. The
+project you wish to give access to `codex` should be mounted to `/workspace`
+inside the container.
+
+```bash
+CODEX_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/claude-code-docker"
+mkdir -p "${CODEX_DATA_HOME}"; \
+docker run \
+    --rm \
+    --interactive \
+    --tty \
+    --name claude-code \
+    --runtime runsc \
+    --volume "$(pwd):/workspace" \
+    --volume "${CODEX_DATA_HOME}:/codex" \
+    "ghcr.io/ianlewis/codex"
+```
+
+### `opencode`
+
+Using the `opencode` launcher script is recommended. This will verify and run
+the latest `opencode` image with the correct parameters. The local state is
+stored in `~/.local/share/opencode-docker`.
+
+The launcher script will run the image with roughly the following command. The
+project you wish to give access to `opencode` should be mounted to `/workspace`
+inside the container.
+
+```bash
+OPENCODE_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/opencode-docker"
+mkdir -p "${OPENCODE_DATA_HOME}"
+docker run \
+    --rm \
+    --interactive \
+    --tty \
+    --name opencode \
+    --runtime runsc \
+    --volume "$(pwd):/workspace" \
+    --volume "${OPENCODE_DATA_HOME}:/local" \
+    "ghcr.io/ianlewis/opencode"
 ```

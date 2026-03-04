@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Command opencode runs the opencode agent in a Docker container using runsc.
-# The current working directory is mounted into the container. opencode
-# configuration is stored in the directory ${XDG_DATA_HOME}/opencode-docker.
+# Command codex runs the OpenAI codex agent in a Docker container using runsc.
+# The current working directory is mounted into the container. Codex
+# configuration is stored in the directory ${XDG_DATA_HOME}/codex-docker.
 
 set -euo pipefail
 
@@ -51,12 +51,12 @@ function _main() {
         exit 1
     fi
 
-    OPENCODE_IMAGE=${OPENCODE_IMAGE:-"ghcr.io/ianlewis/opencode"}
+    CODEX_IMAGE=${CODEX_IMAGE:-"ghcr.io/ianlewis/codex"}
 
     XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
-    OPENCODE_DATA_HOME="${XDG_DATA_HOME}/opencode-docker"
+    CODEX_DATA_HOME="${XDG_DATA_HOME}/codex-docker"
 
-    mkdir -p "${OPENCODE_DATA_HOME}"
+    mkdir -p "${CODEX_DATA_HOME}"
 
     local verified_sha
     verified_sha=$(cosign verify-attestation \
@@ -64,10 +64,10 @@ function _main() {
         --certificate-oidc-issuer https://token.actions.githubusercontent.com \
         --certificate-identity-regexp '^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$' \
         --policy ~/.config/coding-assistant-docker-images/policy.cue \
-        "${OPENCODE_IMAGE}" | jq -r '.payload' | base64 -d | jq -r '.subject[0].digest.sha256')
+        "${CODEX_IMAGE}" | jq -r '.payload' | base64 -d | jq -r '.subject[0].digest.sha256')
 
     # Ensure we have the latest image
-    docker pull "${OPENCODE_IMAGE}@sha256:${verified_sha}"
+    docker pull "${CODEX_IMAGE}@sha256:${verified_sha}"
 
     docker run \
         --rm \
@@ -75,8 +75,8 @@ function _main() {
         --tty \
         --runtime runsc \
         --volume "$(pwd):/workspace" \
-        --volume "${OPENCODE_DATA_HOME}:/local" \
-        "${OPENCODE_IMAGE}@sha256:${verified_sha}" opencode "$@"
+        --volume "${CODEX_DATA_HOME}:/codex" \
+        "${CODEX_IMAGE}@sha256:${verified_sha}" codex "$@"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then

@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Command claude runs the Claude Code agent in a Docker container using the
-# runsc. The current working directory is mounted into the container. Claude
+# Command claude runs the Claude Code agent in a Docker container using runsc.
+# The current working directory is mounted into the container. Claude
 # configuration is stored in the directory ${XDG_DATA_HOME}/claude-code-docker.
 
 set -euo pipefail
@@ -93,4 +93,6 @@ function _main() {
         "${CLAUDE_CODE_IMAGE}@sha256:${verified_sha}" claude "$@"
 }
 
-_main "$@"
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    _main "$@"
+fi
