@@ -41,7 +41,7 @@ The following are required to run the images:
 
 ## Usage
 
-## `claude-code`
+### `claude-code`
 
 Using the `claude` launcher script is recommended. This will verify and run
 the latest `claude-code` image with the correct parameters. The local state is
@@ -71,7 +71,7 @@ docker run \
     "ghcr.io/ianlewis/claude-code"
 ```
 
-## `codex`
+### `codex`
 
 Using the `codex` launcher script is recommended. This will verify and run
 the latest `codex` image with the correct parameters. The local state is
