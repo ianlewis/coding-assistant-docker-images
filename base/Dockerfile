@@ -32,7 +32,7 @@ ENV GIT_VERSION=1:2.47.3-0+deb13u1
 # renovate: suite=trixie depName=jq
 ENV JQ_VERSION=1.7.1-6+deb13u1
 # renovate: suite=trixie depName=libc6-dev
-ENV LIBC6_DEV_VERSION=2.41-12+deb13u1
+ENV LIBC6_DEV_VERSION=2.41-12+deb13u2
 # renovate: suite=trixie depName=make
 ENV MAKE_VERSION=4.4.1-2
 # renovate: suite=trixie depName=python3
