@@ -66,7 +66,7 @@
         "/(^|/)([Dd]ocker|[Cc]ontainer)file[^/]*$/",
       ],
       matchStrings: [
-        '#\\s*renovate:\\s*?(suite=(?<suite>.*?))?\\s*depName=(?<depName>.*?)?\\sENV .*?_VERSION="(?<currentValue>.*)"',
+        "# renovate:( suite=(?<suite>.*?))? depName=(?<depName>.*?)?\\s(?:ENV|ARG) .*?_VERSION=[\"']?(?<currentValue>[^\"'\\s]+)[\"']?",
       ],
       registryUrlTemplate: "https://deb.debian.org/debian?suite={{#if suite }}{{suite}}{{else}}stable{{/if}}&components=main,contrib,non-free&binaryArch=amd64",
       datasourceTemplate: "deb",
@@ -78,7 +78,7 @@
         "/(^|/)([Dd]ocker|[Cc]ontainer)file[^/]*$/",
       ],
       matchStrings: [
-        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s(?:ENV|ARG)\\s+[A-Za-z0-9_]+?_VERSION[ =][\"']?(?<currentValue>.+?)[\"']?\\s(?:ENV|ARG)\\s+[A-Za-z0-9_]+?_DIGEST[ =][\"']?(?<currentDigest>.+?)[\"']?\\s",
+        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s(?:ENV|ARG)\\s+[A-Za-z0-9_]+?_VERSION[ =][\"']?(?<currentValue>.+?)[\"']?\\s(?:ENV|ARG)\\s+[A-Za-z0-9_]+?_DIGEST[ =][\"']?(?<currentDigest>[^\"'\\s]+)[\"']?\\s",
       ],
     },
   ],

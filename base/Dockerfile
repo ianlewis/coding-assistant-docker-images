@@ -29,20 +29,24 @@ ENV GCC_VERSION=4:14.2.0-1
 ENV GOSU_VERSION=1.17-3+b4
 # renovate: suite=trixie depName=git
 ENV GIT_VERSION=1:2.47.3-0+deb13u1
+# renovate: suite=trixie depName=jq
+ENV JQ_VERSION=1.7.1-6+deb13u1
 # renovate: suite=trixie depName=libc6-dev
-ENV LIBC6_DEV_VERSION=2.41-12+deb13u1
+ENV LIBC6_DEV_VERSION=2.41-12+deb13u2
 # renovate: suite=trixie depName=make
 ENV MAKE_VERSION=4.4.1-2
 # renovate: suite=trixie depName=python3
 ENV PYTHON3_VERSION=3.13.5-1
 # renovate: suite=trixie depName=python3-pip
 ENV PYTHON3_PIP_VERSION=25.1.1+dfsg-1
-# renovate: suite=trixie depName=wget
-ENV WGET_VERSION=1.25.0-2
-# renovate: suite=trixie depName=zip
-ENV ZIP_VERSION=3.0-15
 # renovate: suite=trixie depName=unzip
 ENV UNZIP_VERSION=6.0-29
+# renovate: suite=trixie depName=wget
+ENV WGET_VERSION=1.25.0-2
+# renovate: suite=trixie depName=yq
+ENV YQ_VERSION=3.4.3-2
+# renovate: suite=trixie depName=zip
+ENV ZIP_VERSION=3.0-15
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -58,14 +62,16 @@ RUN apt-get update && apt-get install -y \
     gcc-aarch64-linux-gnu=${GCC_VERSION} \
     gosu=${GOSU_VERSION} \
     git=${GIT_VERSION} \
+    jq=${JQ_VERSION} \
     libc6-dev=${LIBC6_DEV_VERSION} \
     make=${MAKE_VERSION} \
     python3=${PYTHON3_VERSION} \
     python3-venv=${PYTHON3_VERSION} \
     python3-pip=${PYTHON3_PIP_VERSION} \
-    wget=${WGET_VERSION} \
-    zip=${ZIP_VERSION} \
     unzip=${UNZIP_VERSION} \
+    wget=${WGET_VERSION} \
+    yq=${YQ_VERSION} \
+    zip=${ZIP_VERSION} \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PATH=/usr/local/go/bin:$PATH
