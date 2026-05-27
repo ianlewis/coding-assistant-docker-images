@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ghcr.io/ianlewis/coding-assistant-docker-images-base:latest@sha256:a1b328b0d3cc7ef73d92659ab8c90437473a88baa447cbf80a793871cfff2c68
+FROM ghcr.io/ianlewis/coding-assistant-docker-images-base:latest@sha256:8cd93e957bcb5143659a0b6c4d947bc53cb625e6b3f9d7a10f55db80fabf0e7f
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
