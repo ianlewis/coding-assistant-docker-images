@@ -22,7 +22,7 @@ ARG BUILDPLATFORM
 
 # Package versions
 # renovate: suite=trixie depName=curl
-ENV CURL_VERSION=8.14.1-2+deb13u2
+ENV CURL_VERSION=8.14.1-2+deb13u3
 # renovate: suite=trixie depName=gcc
 ENV GCC_VERSION=4:14.2.0-1
 # renovate: suite=trixie depName=gosu
@@ -30,9 +30,9 @@ ENV GOSU_VERSION=1.17-3+b4
 # renovate: suite=trixie depName=git
 ENV GIT_VERSION=1:2.47.3-0+deb13u1
 # renovate: suite=trixie depName=jq
-ENV JQ_VERSION=1.7.1-6+deb13u1
+ENV JQ_VERSION=1.7.1-6+deb13u2
 # renovate: suite=trixie depName=libc6-dev
-ENV LIBC6_DEV_VERSION=2.41-12+deb13u2
+ENV LIBC6_DEV_VERSION=2.41-12+deb13u3
 # renovate: suite=trixie depName=make
 ENV MAKE_VERSION=4.4.1-2
 # renovate: suite=trixie depName=python3
@@ -48,30 +48,40 @@ ENV YQ_VERSION=3.4.3-2
 # renovate: suite=trixie depName=zip
 ENV ZIP_VERSION=3.0-15
 
+# renovate: datasource=github-releases depName=cli/cli versioning=loose
+ENV GH_VERSION=2.93.0
+
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
-    --no-install-recommends \
-    curl=${CURL_VERSION} \
-    g++=${GCC_VERSION} \
-    g++-x86-64-linux-gnu=${GCC_VERSION} \
-    g++-aarch64-linux-gnu=${GCC_VERSION} \
-    gcc=${GCC_VERSION} \
-    gcc-x86-64-linux-gnu=${GCC_VERSION} \
-    gcc-aarch64-linux-gnu=${GCC_VERSION} \
-    gosu=${GOSU_VERSION} \
-    git=${GIT_VERSION} \
-    jq=${JQ_VERSION} \
-    libc6-dev=${LIBC6_DEV_VERSION} \
-    make=${MAKE_VERSION} \
-    python3=${PYTHON3_VERSION} \
-    python3-venv=${PYTHON3_VERSION} \
-    python3-pip=${PYTHON3_PIP_VERSION} \
-    unzip=${UNZIP_VERSION} \
     wget=${WGET_VERSION} \
-    yq=${YQ_VERSION} \
-    zip=${ZIP_VERSION} \
+	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+	&& cat $out | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+	&& chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+	&& apt-get update \
+	&& apt-get install -y \
+        --no-install-recommends \
+        curl=${CURL_VERSION} \
+        g++=${GCC_VERSION} \
+        g++-x86-64-linux-gnu=${GCC_VERSION} \
+        g++-aarch64-linux-gnu=${GCC_VERSION} \
+        gcc=${GCC_VERSION} \
+        gcc-x86-64-linux-gnu=${GCC_VERSION} \
+        gcc-aarch64-linux-gnu=${GCC_VERSION} \
+        gosu=${GOSU_VERSION} \
+        gh=${GH_VERSION} \
+        git=${GIT_VERSION} \
+        jq=${JQ_VERSION} \
+        libc6-dev=${LIBC6_DEV_VERSION} \
+        make=${MAKE_VERSION} \
+        python3=${PYTHON3_VERSION} \
+        python3-venv=${PYTHON3_VERSION} \
+        python3-pip=${PYTHON3_PIP_VERSION} \
+        unzip=${UNZIP_VERSION} \
+        yq=${YQ_VERSION} \
+        zip=${ZIP_VERSION} \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PATH=/usr/local/go/bin:$PATH
