@@ -21,6 +21,8 @@ ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
 # Package versions
+# renovate: suite=trixie depName=ca-certificates
+ENV CA_CERTIFICATES_VERSION=20250419
 # renovate: suite=trixie depName=curl
 ENV CURL_VERSION=8.14.1-2+deb13u3
 # renovate: suite=trixie depName=gcc
@@ -56,6 +58,7 @@ SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget=${WGET_VERSION} \
+    ca-certificates=${CA_CERTIFICATES_VERSION} \
 	&& out=$(mktemp) \
     && wget -nv -O"${out}" https://cli.github.com/packages/githubcli-archive-keyring.gpg \
 	&& tee /etc/apt/keyrings/githubcli-archive-keyring.gpg <"${out}" > /dev/null \
