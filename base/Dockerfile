@@ -54,15 +54,15 @@ ENV GH_VERSION=2.93.0
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 # Install dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     wget=${WGET_VERSION} \
-	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-	&& cat $out | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+	&& out=$(mktemp) \
+    && wget -nv -O"${out}" https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+	&& tee /etc/apt/keyrings/githubcli-archive-keyring.gpg <"${out}" > /dev/null \
 	&& chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
 	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
 	&& apt-get update \
-	&& apt-get install -y \
-        --no-install-recommends \
+	&& apt-get install -y --no-install-recommends \
         curl=${CURL_VERSION} \
         g++=${GCC_VERSION} \
         g++-x86-64-linux-gnu=${GCC_VERSION} \
