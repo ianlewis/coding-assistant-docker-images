@@ -95,6 +95,30 @@ docker run \
     "ghcr.io/ianlewis/codex"
 ```
 
+### `copilot`
+
+Using the `copilot` launcher script is recommended. This will verify and run
+the latest `copilot` image with the correct parameters. The local state is
+stored in `~/.local/share/copilot-docker`.
+
+The launcher script will run the image with roughly the following command. The
+project you wish to give access to `copilot` should be mounted to `/workspace`
+inside the container.
+
+```bash
+COPILOT_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/copilot-docker"
+mkdir -p "${COPILOT_DATA_HOME}"; \
+docker run \
+    --rm \
+    --interactive \
+    --tty
+    --name copilot \
+    --runtime runsc \
+    --volume "$(pwd):/workspace" \
+    --volume "${COPILOT_DATA_HOME}:/copilot" \
+    "ghcr.io/ianlewis/copilot"
+```
+
 ### `opencode`
 
 Using the `opencode` launcher script is recommended. This will verify and run
