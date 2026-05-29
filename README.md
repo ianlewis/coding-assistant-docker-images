@@ -87,7 +87,7 @@ mkdir -p "${CODEX_DATA_HOME}"; \
 docker run \
     --rm \
     --interactive \
-    --tty
+    --tty \
     --name codex \
     --runtime runsc \
     --volume "$(pwd):/workspace" \
@@ -111,7 +111,7 @@ mkdir -p "${COPILOT_DATA_HOME}"; \
 docker run \
     --rm \
     --interactive \
-    --tty
+    --tty \
     --name copilot \
     --runtime runsc \
     --volume "$(pwd):/workspace" \
