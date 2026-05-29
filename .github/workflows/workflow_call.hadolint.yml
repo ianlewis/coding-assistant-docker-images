@@ -33,7 +33,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: actionlint
+      - name: hadolint
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: make actionlint
+        run: make hadolint
