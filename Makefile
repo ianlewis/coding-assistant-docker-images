@@ -55,6 +55,7 @@ MKTEMP := $(shell command -v gmktemp 2>/dev/null || command -v mktemp 2>/dev/nul
 BASE_IMAGE_NAME ?= ghcr.io/ianlewis/base
 CLAUDECODE_IMAGE_NAME ?= ghcr.io/ianlewis/claude-code
 CODEX_IMAGE_NAME ?= ghcr.io/ianlewis/codex
+COPILOT_IMAGE_NAME ?= ghcr.io/ianlewis/copilot
 OPENCODE_IMAGE_NAME ?= ghcr.io/ianlewis/opencode
 
 XDG_BIN ?= $(HOME)/.local/bin
@@ -199,6 +200,9 @@ install: ## Install agent launcher scripts.
 		$(REPO_ROOT)/bin/codex.bash \
 		$(XDG_BIN)/codex; \
 	cp -f \
+		$(REPO_ROOT)/bin/copilot.bash \
+		$(XDG_BIN)/copilot
+	cp -f \
 		$(REPO_ROOT)/bin/opencode.bash \
 		$(XDG_BIN)/opencode
 	chmod +x \
@@ -238,6 +242,19 @@ run-codex: codex-docker ## Build and run codex from source.
 		--volume "$(REPO_ROOT):/workspace" \
 		--volume "$(XDG_DATA_HOME)/codex-docker:/codex" \
 		"$(CODEX_IMAGE_NAME)"
+
+run-copilot: copilot-docker ## Build and run copilot from source.
+	@# bash \
+	mkdir -p "$(XDG_DATA_HOME)/copilot-docker"; \
+	docker run \
+		--rm \
+		--interactive \
+		--tty \
+		--name copilot \
+		--runtime runsc \
+		--volume "$(REPO_ROOT):/workspace" \
+		--volume "$(XDG_DATA_HOME)/copilot-docker:/copilot" \
+		"$(COPILOT_IMAGE_NAME)"
 
 run-opencode: opencode-docker ## Build and run opencode from source.
 	@# bash \
@@ -325,6 +342,33 @@ codex-docker: codex/Dockerfile codex/package-lock.json codex/config.sh ## Build 
 			--tag "$(CODEX_IMAGE_NAME)" \
 			--file codex/Dockerfile \
 			codex/; \
+	fi
+
+copilot/package-lock.json: copilot/package.json
+	@# bash \
+	npm install \
+		--prefix copilot/ \
+		--package-lock-only \
+		--no-audit \
+		--no-fund \
+		copilot/
+
+.PHONY: copilot-docker
+copilot-docker: copilot/Dockerfile copilot/package-lock.json copilot/config.sh ## Build the copilot Docker image.
+	@# bash \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+		docker buildx build \
+			--output type=docker \
+			--progress=plain \
+			--tag "$(COPILOT_IMAGE_NAME)" \
+			--file copilot/Dockerfile \
+			copilot/; \
+	else \
+		docker buildx build \
+			--output type=docker \
+			--tag "$(COPILOT_IMAGE_NAME)" \
+			--file copilot/Dockerfile \
+			copilot/; \
 	fi
 
 opencode/package-lock.json: opencode/package.json
