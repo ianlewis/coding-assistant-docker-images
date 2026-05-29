@@ -201,13 +201,14 @@ install: ## Install agent launcher scripts.
 		$(XDG_BIN)/codex; \
 	cp -f \
 		$(REPO_ROOT)/bin/copilot.bash \
-		$(XDG_BIN)/copilot
+		$(XDG_BIN)/copilot; \
 	cp -f \
 		$(REPO_ROOT)/bin/opencode.bash \
 		$(XDG_BIN)/opencode
 	chmod +x \
 		$(XDG_BIN)/claude \
 		$(XDG_BIN)/codex \
+		$(XDG_BIN)/copilot \
 		$(XDG_BIN)/opencode
 
 ## Agents
