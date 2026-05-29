@@ -76,7 +76,7 @@ function _main() {
         --runtime runsc \
         --volume "$(pwd):/workspace" \
         --volume "${COPILOT_DATA_HOME}:/copilot" \
-        "${COPILOT_IMAGE}@sha256:${verified_sha}" codex "$@"
+        "${COPILOT_IMAGE}@sha256:${verified_sha}" copilot "$@"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
