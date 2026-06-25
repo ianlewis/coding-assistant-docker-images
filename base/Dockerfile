@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # NOTE: the trixie-slim images are based on Debian 13 (Trixie).
-FROM node:24.13.0-trixie-slim@sha256:036dfa7e82a1e867b09248440a2b6635b3f8de557f69e60bac923a10c6e696a8
+FROM node:24.16.0-trixie-slim@sha256:45fbb3ca3b6c7e6646cd2889d0ac7bf314bb180036da792221fc2f48fe4d43fb
 ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETPLATFORM
