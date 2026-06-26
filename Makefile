@@ -269,9 +269,9 @@ run-opencode: opencode-docker ## Build and run opencode from source.
 		--name opencode \
 		--runtime runsc \
 		--volume "$(REPO_ROOT):/workspace" \
-		--volume "$(XDG_DATA_HOME)/opencode-docker/share:/share" \
-		--volume "$(XDG_DATA_HOME)/opencode-docker/state:/state" \
-		--volume "$(XDG_DATA_HOME)/opencode-docker/config:/config" \
+		--volume "$(XDG_DATA_HOME)/opencode-docker/share:/opencode/share" \
+		--volume "$(XDG_DATA_HOME)/opencode-docker/state:/opencode/state" \
+		--volume "$(XDG_DATA_HOME)/opencode-docker/config:/opencode/config" \
 		"$(OPENCODE_IMAGE_NAME)" opencode --help
 
 ## Image
