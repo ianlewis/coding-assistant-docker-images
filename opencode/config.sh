@@ -29,4 +29,7 @@ if [ -z "$user_home" ]; then
 fi
 
 log "Creating symlinks in user home directory: ${user_home}"
-ln -sf /local "${user_home}/.local"
+mkdir -p "${user_home}/.local"
+ln -sf /share "${user_home}/.local/share"
+ln -sf /state "${user_home}/.local/state"
+ln -sf /config "${user_home}/.config"

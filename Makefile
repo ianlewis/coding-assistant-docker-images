@@ -259,7 +259,9 @@ run-copilot: copilot-docker ## Build and run copilot from source.
 
 run-opencode: opencode-docker ## Build and run opencode from source.
 	@# bash \
-	mkdir -p "$(XDG_DATA_HOME)/opencode-docker"; \
+	mkdir -p "$(XDG_DATA_HOME)/opencode-docker/share"; \
+	mkdir -p "$(XDG_DATA_HOME)/opencode-docker/state"; \
+	mkdir -p "$(XDG_DATA_HOME)/opencode-docker/config"; \
 	docker run \
 		--rm \
 		--interactive \
@@ -267,8 +269,10 @@ run-opencode: opencode-docker ## Build and run opencode from source.
 		--name opencode \
 		--runtime runsc \
 		--volume "$(REPO_ROOT):/workspace" \
-		--volume "$(XDG_DATA_HOME)/opencode-docker:/local" \
-		"$(OPENCODE_IMAGE_NAME)"
+		--volume "$(XDG_DATA_HOME)/opencode-docker/share:/share" \
+		--volume "$(XDG_DATA_HOME)/opencode-docker/state:/state" \
+		--volume "$(XDG_DATA_HOME)/opencode-docker/config:/config" \
+		"$(OPENCODE_IMAGE_NAME)" opencode --help
 
 ## Image
 #####################################################################
