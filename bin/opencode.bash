@@ -56,7 +56,9 @@ function _main() {
     XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
     OPENCODE_DATA_HOME="${XDG_DATA_HOME}/opencode-docker"
 
-    mkdir -p "${OPENCODE_DATA_HOME}"
+    mkdir -p "${OPENCODE_DATA_HOME}/share"
+    mkdir -p "${OPENCODE_DATA_HOME}/state"
+    mkdir -p "${OPENCODE_DATA_HOME}/config"
 
     local verified_sha
     verified_sha=$(cosign verify-attestation \
@@ -75,7 +77,9 @@ function _main() {
         --tty \
         --runtime runsc \
         --volume "$(pwd):/workspace" \
-        --volume "${OPENCODE_DATA_HOME}:/local" \
+        --volume "${OPENCODE_DATA_HOME}/share:/opencode/share" \
+        --volume "${OPENCODE_DATA_HOME}/state:/opencode/state" \
+        --volume "${OPENCODE_DATA_HOME}/config:/opencode/config" \
         "${OPENCODE_IMAGE}@sha256:${verified_sha}" opencode "$@"
 }
 
