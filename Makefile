@@ -281,19 +281,15 @@ run-opencode: opencode-docker ## Build and run opencode from source.
 base: base/Dockerfile base/entrypoint.sh ## Build the opencode Docker image.
 	@# bash \
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
-		docker buildx build \
-			--output type=docker \
-			--progress=plain \
-			--tag "$(BASE_IMAGE_NAME)" \
-			--file base/Dockerfile \
-			base/; \
-	else \
-		docker buildx build \
-			--output type=docker \
-			--tag "$(BASE_IMAGE_NAME)" \
-			--file base/Dockerfile \
-			base/; \
-	fi
+		extra_args=("--progress=plain"); \
+	fi; \
+	docker buildx build \
+		--output type=docker \
+		--secret id=gh_token,env=GH_TOKEN \
+		--tag "$(BASE_IMAGE_NAME)" \
+		--file base/Dockerfile \
+		"$${extra_args[@]}" \
+		base/
 
 claude-code/package-lock.json: claude-code/package.json
 	@# bash \
