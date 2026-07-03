@@ -280,6 +280,7 @@ run-opencode: opencode-docker ## Build and run opencode from source.
 .PHONY: base
 base: base/Dockerfile base/entrypoint.sh ## Build the opencode Docker image.
 	@# bash \
+	extra_args=(); \
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
 		extra_args=("--progress=plain"); \
 	fi; \
