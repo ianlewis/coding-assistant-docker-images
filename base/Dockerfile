@@ -50,20 +50,38 @@ ENV YQ_VERSION=3.4.3-2
 # renovate: suite=trixie depName=zip
 ENV ZIP_VERSION=3.0-15
 
+ENV GH_BOOTSTRAP_VERSION=2.96.0
+ENV GH_BOOTSTRAP_DIGEST_linux_amd64=83d5c2ccad5498f58bf6368acb1ab32588cf43ab3a4b1c301bf36328b1c8bd60
+ENV GH_BOOTSTRAP_DIGEST_linux_arm64=06f86ec7103d41993b76cd78072f43595c34aaa56506d971d9860e67140bf909
+
 # renovate: datasource=github-releases depName=cli/cli versioning=loose
-ENV GH_VERSION=2.93.0
+ENV GH_VERSION=2.96.0
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 # Install dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    wget=${WGET_VERSION} \
-    ca-certificates=${CA_CERTIFICATES_VERSION} \
-	&& out=$(mktemp) \
-    && wget -nv -O"${out}" https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-	&& tee /etc/apt/keyrings/githubcli-archive-keyring.gpg <"${out}" > /dev/null \
-	&& chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+RUN --mount=type=secret,id=gh_token \
+    apt-get update \
+    && apt-get install -y --no-install-recommends \
+        wget=${WGET_VERSION} \
+        ca-certificates=${CA_CERTIFICATES_VERSION} \
+	&& bootstrap_tempdir=$(mktemp -d) \
+    && wget -nv -O"${bootstrap_tempdir}/gh.tar.gz" "https://github.com/cli/cli/releases/download/v${GH_BOOTSTRAP_VERSION}/gh_${GH_BOOTSTRAP_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz" \
+    && gh_bootstrap_digest_var="GH_BOOTSTRAP_DIGEST_${TARGETOS}_${TARGETARCH}" \
+    && echo "${!gh_bootstrap_digest_var}  ${bootstrap_tempdir}/gh.tar.gz" | sha256sum -c - \
+    && tar -C "${bootstrap_tempdir}" -xzf "${bootstrap_tempdir}/gh.tar.gz" \
+	&& tempdir=$(mktemp -d) \
+    && wget -nv -O"${tempdir}/gh.tar.gz" "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz" \
+    && GH_TOKEN="$(cat /run/secrets/gh_token)" \
+        "${bootstrap_tempdir}/gh_${GH_BOOTSTRAP_VERSION}_${TARGETOS}_${TARGETARCH}/bin/gh" \
+            release verify-asset \
+            --repo cli/cli \
+            "v${GH_VERSION}" \
+            "${tempdir}/gh.tar.gz"\
+    && tar -C "${tempdir}" -xzf "${tempdir}/gh.tar.gz" \
+    && mv "${tempdir}/gh_${GH_VERSION}_${TARGETOS}_${TARGETARCH}/bin/gh" "/usr/local/bin/gh" \
+    && rm -rf "${bootstrap_tempdir}" \
+    && rm -rf "${tempdir}" \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends \
         curl=${CURL_VERSION} \
@@ -74,7 +92,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gcc-x86-64-linux-gnu=${GCC_VERSION} \
         gcc-aarch64-linux-gnu=${GCC_VERSION} \
         gosu=${GOSU_VERSION} \
-        gh=${GH_VERSION} \
         git=${GIT_VERSION} \
         jq=${JQ_VERSION} \
         libc6-dev=${LIBC6_DEV_VERSION} \
