@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # NOTE: the trixie-slim images are based on Debian 13 (Trixie).
-FROM node:24.13.0-trixie-slim@sha256:036dfa7e82a1e867b09248440a2b6635b3f8de557f69e60bac923a10c6e696a8
+FROM node:24.18.0-trixie-slim@sha256:ae91dcc111a68c9d2d81ff2a17bda61be126426176fde6fe7d08ab13b7f50573
 ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETPLATFORM
@@ -24,7 +24,7 @@ ARG BUILDPLATFORM
 # renovate: suite=trixie depName=ca-certificates
 ENV CA_CERTIFICATES_VERSION=20250419
 # renovate: suite=trixie depName=curl
-ENV CURL_VERSION=8.14.1-2+deb13u3
+ENV CURL_VERSION=8.14.1-2+deb13u4
 # renovate: suite=trixie depName=gcc
 ENV GCC_VERSION=4:14.2.0-1
 # renovate: suite=trixie depName=gosu
