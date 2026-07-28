@@ -24,7 +24,7 @@ ARG BUILDPLATFORM
 # renovate: suite=trixie depName=ca-certificates
 ENV CA_CERTIFICATES_VERSION=20250419
 # renovate: suite=trixie depName=curl
-ENV CURL_VERSION=8.14.1-2+deb13u3
+ENV CURL_VERSION=8.14.1-2+deb13u4
 # renovate: suite=trixie depName=gcc
 ENV GCC_VERSION=4:14.2.0-1
 # renovate: suite=trixie depName=gosu
