@@ -104,7 +104,8 @@ RUN --mount=type=secret,id=gh_token \
         zip=${ZIP_VERSION} \
     && rm -rf /var/lib/apt/lists/*
 
-ENV PATH=/usr/local/go/bin:$PATH
+ENV PATH="/usr/local/go/bin:${PATH}"
+RUN echo "PATH=/usr/local/go/bin:\${PATH}" > /etc/profile.d/0-base.sh
 
 # renovate: datasource=golang-version depName=golang versioning=loose
 ENV GOLANG_VERSION=1.25.7

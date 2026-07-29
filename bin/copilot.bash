@@ -73,7 +73,7 @@ function _main() {
         --rm \
         --interactive \
         --tty \
-        --runtime runsc \
+        --runtime io.containerd.runsc.v1 \
         --volume "$(pwd):/workspace" \
         --volume "${COPILOT_DATA_HOME}:/copilot" \
         "${COPILOT_IMAGE}@sha256:${verified_sha}" copilot "$@"

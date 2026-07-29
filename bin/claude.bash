@@ -86,7 +86,7 @@ function _main() {
         --rm \
         --interactive \
         --tty \
-        --runtime runsc \
+        --runtime io.containerd.runsc.v1 \
         --volume "$(pwd):/workspace" \
         --volume "${CLAUDE_DATA_HOME}/claude.json:/claude.json" \
         --volume "${CLAUDE_DATA_HOME}:/claude" \

@@ -58,6 +58,8 @@ function _main() {
 
     mkdir -p "${CODEX_DATA_HOME}"
 
+    local default_flags=("--config" "shell_environment_policy.include_only='[\"PATH\",\"HOME\"]'")
+
     local verified_sha
     verified_sha=$(cosign verify-attestation \
         --type slsaprovenance \
@@ -73,10 +75,10 @@ function _main() {
         --rm \
         --interactive \
         --tty \
-        --runtime runsc \
+        --runtime io.containerd.runsc.v1 \
         --volume "$(pwd):/workspace" \
         --volume "${CODEX_DATA_HOME}:/codex" \
-        "${CODEX_IMAGE}@sha256:${verified_sha}" codex "$@"
+        "${CODEX_IMAGE}@sha256:${verified_sha}" codex "${default_flags[@]}" "$@"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then

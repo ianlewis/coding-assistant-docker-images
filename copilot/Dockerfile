@@ -26,6 +26,7 @@ RUN npm clean-install --no-fund --omit=dev
 COPY config.sh /config.sh
 
 ENV PATH="/app/node_modules/.bin:$PATH"
+RUN echo "PATH=\"/app/node_modules/.bin:\${PATH}\"" > /etc/profile.d/10-copilot.sh
 
 WORKDIR /workspace
 CMD ["copilot"]

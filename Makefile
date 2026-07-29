@@ -242,7 +242,8 @@ run-codex: codex-docker ## Build and run codex from source.
 		--runtime runsc \
 		--volume "$(REPO_ROOT):/workspace" \
 		--volume "$(XDG_DATA_HOME)/codex-docker:/codex" \
-		"$(CODEX_IMAGE_NAME)"
+		"$(CODEX_IMAGE_NAME)" codex \
+    		--config "shell_environment_policy.include_only='[\"PATH\",\"HOME\"]'"
 
 run-copilot: copilot-docker ## Build and run copilot from source.
 	@# bash \
