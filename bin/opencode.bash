@@ -75,7 +75,7 @@ function _main() {
         --rm \
         --interactive \
         --tty \
-        --runtime runsc \
+        --runtime io.containerd.runsc.v1 \
         --volume "$(pwd):/workspace" \
         --volume "${OPENCODE_DATA_HOME}/share:/opencode/share" \
         --volume "${OPENCODE_DATA_HOME}/state:/opencode/state" \
