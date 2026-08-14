@@ -31,7 +31,7 @@ jobs:
       issues: write # Needed to label and write comments on issues.
       pull-requests: write # Needed to label and write comments on PRs.
     steps:
-      - uses: actions/stale@997185467fa4f803885201cee163a9f38240193d # v10.1.1
+      - uses: actions/stale@1e223db275d687790206a7acac4d1a11bd6fe629 # v10.4.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           stale-issue-message: "A friendly reminder that this issue had no activity for 120 days."
