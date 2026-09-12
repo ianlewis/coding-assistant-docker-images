@@ -20,35 +20,34 @@ ARG TARGETPLATFORM
 # BUILDPLATFORM should be linux/amd64
 ARG BUILDPLATFORM
 
-# Package versions
-# renovate: suite=trixie depName=ca-certificates
+# renovate: datasource=repology depName=debian_13/ca-certificates
 ENV CA_CERTIFICATES_VERSION=20250419
-# renovate: suite=trixie depName=curl
-ENV CURL_VERSION=8.14.1-2+deb13u4
-# renovate: suite=trixie depName=gcc
+# renovate: datasource=repology depName=debian_13/curl
+ENV CURL_VERSION=8.14.1-2+deb13u5
+# renovate: datasource=repology depName=debian_13/gcc
 ENV GCC_VERSION=4:14.2.0-1
-# renovate: suite=trixie depName=gosu
+# renovate: datasource=repology depName=debian_13/gosu
 ENV GOSU_VERSION=1.17-3+b4
-# renovate: suite=trixie depName=git
+# renovate: datasource=repology depName=debian_13/git
 ENV GIT_VERSION=1:2.47.3-0+deb13u1
-# renovate: suite=trixie depName=jq
-ENV JQ_VERSION=1.7.1-6+deb13u2
-# renovate: suite=trixie depName=libc6-dev
-ENV LIBC6_DEV_VERSION=2.41-12+deb13u3
-# renovate: suite=trixie depName=make
+# renovate: datasource=repology depName=debian_13/jq
+ENV JQ_VERSION=1.7.1-6+deb13u3
+# renovate: datasource=repology depName=debian_13/libc6-dev
+ENV LIBC6_DEV_VERSION=2.41-12+deb13u4
+# renovate: datasource=repology depName=debian_13/make
 ENV MAKE_VERSION=4.4.1-2
-# renovate: suite=trixie depName=python3
+# renovate: datasource=repology depName=debian_13/python3
 ENV PYTHON3_VERSION=3.13.5-1
-# renovate: suite=trixie depName=python3-pip
+# renovate: datasource=repology depName=debian_13/python3-pip
 ENV PYTHON3_PIP_VERSION=25.1.1+dfsg-1
-# renovate: suite=trixie depName=unzip
-ENV UNZIP_VERSION=6.0-29
-# renovate: suite=trixie depName=wget
+# renovate: datasource=repology depName=debian_13/unzip
+ENV UNZIP_VERSION=6.0-29+deb13u1
+# renovate: datasource=repology depName=debian_13/wget
 ENV WGET_VERSION=1.25.0-2
-# renovate: suite=trixie depName=yq
+# renovate: datasource=repology depName=debian_13/yq
 ENV YQ_VERSION=3.4.3-2
-# renovate: suite=trixie depName=zip
-ENV ZIP_VERSION=3.0-15
+# renovate: datasource=repology depName=debian_13/zip
+ENV ZIP_VERSION=3.0-15+deb13u1
 
 ENV GH_BOOTSTRAP_VERSION=2.96.0
 ENV GH_BOOTSTRAP_DIGEST_linux_amd64=83d5c2ccad5498f58bf6368acb1ab32588cf43ab3a4b1c301bf36328b1c8bd60
@@ -108,15 +107,15 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 RUN echo "PATH=/usr/local/go/bin:\${PATH}" > /etc/profile.d/0-base.sh
 
 # renovate: datasource=golang-version depName=golang versioning=loose
-ENV GOLANG_VERSION=1.25.7
+ENV GOLANG_VERSION=1.27.1
 ENV GOLANG_DIGEST_VAR_NAME=GOLANG_DIGEST_${TARGETOS}_${TARGETARCH}
-ENV GOLANG_DIGEST_linux_amd64=12e6d6a191091ae27dc31f6efc630e3a3b8ba409baf3573d955b196fdf086005
-ENV GOLANG_DIGEST_linux_arm64=ba611a53534135a81067240eff9508cd7e256c560edd5d8c2fef54f083c07129
+ENV GOLANG_DIGEST_linux_amd64=63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445
+ENV GOLANG_DIGEST_linux_arm64=3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec
 
 ENV GOBIN=/usr/local/go/bin
 
 # renovate: datasource=go depName=golang.org/x/tools/gopls versioning=loose
-ENV GOPLS_VERSION=0.21.1
+ENV GOPLS_VERSION=0.23.0
 
 RUN url="https://dl.google.com/go/go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz"; \
     sha256="${!GOLANG_DIGEST_VAR_NAME}"; \
