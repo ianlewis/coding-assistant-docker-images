@@ -53,6 +53,7 @@ AWK := $(shell command -v gawk 2>/dev/null || command -v awk 2>/dev/null)
 MKTEMP := $(shell command -v gmktemp 2>/dev/null || command -v mktemp 2>/dev/null)
 
 BASE_IMAGE_NAME ?= ghcr.io/ianlewis/base
+ANTIGRAVITY_IMAGE_NAME ?= ghcr.io/ianlewis/antigravity
 CLAUDECODE_IMAGE_NAME ?= ghcr.io/ianlewis/claude-code
 CODEX_IMAGE_NAME ?= ghcr.io/ianlewis/codex
 COPILOT_IMAGE_NAME ?= ghcr.io/ianlewis/copilot
@@ -176,7 +177,7 @@ $(AQUA_ROOT_DIR)/.installed: .aqua.yaml .bin/aqua-$(AQUA_VERSION)/aqua
 #####################################################################
 
 .PHONY: all
-all: test base opencode-docker claude-code-docker ## Build everything.
+all: test base antigravity-docker claude-code-docker codex-docker copilot-docker opencode-docker ## Build everything.
 
 ## Testing
 #####################################################################
@@ -194,6 +195,9 @@ install: ## Install agent launcher scripts.
 		$(REPO_ROOT)/config/policy.cue \
 		$(XDG_CONFIG_HOME)/coding-assistant-docker-images/; \
 	cp -f \
+		$(REPO_ROOT)/bin/agy.bash \
+		$(XDG_BIN)/agy; \
+	cp -f \
 		$(REPO_ROOT)/bin/claude.bash \
 		$(XDG_BIN)/claude; \
 	cp -f \
@@ -206,6 +210,7 @@ install: ## Install agent launcher scripts.
 		$(REPO_ROOT)/bin/opencode.bash \
 		$(XDG_BIN)/opencode
 	chmod +x \
+		$(XDG_BIN)/agy \
 		$(XDG_BIN)/claude \
 		$(XDG_BIN)/codex \
 		$(XDG_BIN)/copilot \
@@ -213,6 +218,22 @@ install: ## Install agent launcher scripts.
 
 ## Agents
 #####################################################################
+
+run-antigravity: antigravity-docker ## Build and run Claude Code from source.
+	@# bash \
+	mkdir -p "$(XDG_DATA_HOME)/antigravity-docker"; \
+	if [ ! -f "$(XDG_DATA_HOME)/antigravity-docker/settings.json" ]; then \
+		mkdir -p "$(XDG_DATA_HOME)/antigravity-docker"; \
+		echo "{}" > "$(XDG_DATA_HOME)/antigravity-docker/settings.json"; \
+	fi; \
+	docker run \
+		--rm \
+		--interactive \
+		--tty \
+        --runtime io.containerd.runsc.v1 \
+		--volume "$(REPO_ROOT):/workspace" \
+		--volume "$(XDG_DATA_HOME)/antigravity-docker:/antigravity-cli" \
+		"$(ANTIGRAVITY_IMAGE_NAME)"
 
 run-claude-code: claude-code-docker ## Build and run Claude Code from source.
 	@# bash \
@@ -224,8 +245,7 @@ run-claude-code: claude-code-docker ## Build and run Claude Code from source.
 		--rm \
 		--interactive \
 		--tty \
-		--name claude-code \
-		--runtime runsc \
+        --runtime io.containerd.runsc.v1 \
 		--volume "$(REPO_ROOT):/workspace" \
 		--volume "$(XDG_DATA_HOME)/claude-code-docker/claude.json:/claude.json" \
 		--volume "$(XDG_DATA_HOME)/claude-code-docker:/claude" \
@@ -238,8 +258,7 @@ run-codex: codex-docker ## Build and run codex from source.
 		--rm \
 		--interactive \
 		--tty \
-		--name codex \
-		--runtime runsc \
+        --runtime io.containerd.runsc.v1 \
 		--volume "$(REPO_ROOT):/workspace" \
 		--volume "$(XDG_DATA_HOME)/codex-docker:/codex" \
 		"$(CODEX_IMAGE_NAME)" codex \
@@ -252,8 +271,7 @@ run-copilot: copilot-docker ## Build and run copilot from source.
 		--rm \
 		--interactive \
 		--tty \
-		--name copilot \
-		--runtime runsc \
+        --runtime io.containerd.runsc.v1 \
 		--volume "$(REPO_ROOT):/workspace" \
 		--volume "$(XDG_DATA_HOME)/copilot-docker:/copilot" \
 		"$(COPILOT_IMAGE_NAME)"
@@ -267,8 +285,7 @@ run-opencode: opencode-docker ## Build and run opencode from source.
 		--rm \
 		--interactive \
 		--tty \
-		--name opencode \
-		--runtime runsc \
+        --runtime io.containerd.runsc.v1 \
 		--volume "$(REPO_ROOT):/workspace" \
 		--volume "$(XDG_DATA_HOME)/opencode-docker/share:/opencode/share" \
 		--volume "$(XDG_DATA_HOME)/opencode-docker/state:/opencode/state" \
@@ -292,6 +309,24 @@ base: base/Dockerfile base/entrypoint.sh ## Build the opencode Docker image.
 		--file base/Dockerfile \
 		"$${extra_args[@]}" \
 		base/
+
+.PHONY: antigravity-docker
+antigravity-docker: antigravity/Dockerfile antigravity/config.sh ## Build the antigravity-cli Docker image.
+	@# bash \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+		docker buildx build \
+			--output type=docker \
+			--progress=plain \
+			--tag "$(ANTIGRAVITY_IMAGE_NAME)" \
+			--file antigravity/Dockerfile \
+			antigravity/; \
+	else \
+		docker buildx build \
+			--output type=docker \
+			--tag "$(ANTIGRAVITY_IMAGE_NAME)" \
+			--file antigravity/Dockerfile \
+			antigravity/; \
+	fi
 
 claude-code/package-lock.json: claude-code/package.json
 	@# bash \
