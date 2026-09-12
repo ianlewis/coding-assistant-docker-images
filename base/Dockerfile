@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # NOTE: the trixie-slim images are based on Debian 13 (Trixie).
-FROM node:24.18.0-trixie-slim@sha256:ae91dcc111a68c9d2d81ff2a17bda61be126426176fde6fe7d08ab13b7f50573
+FROM node:24.20.0-trixie-slim@sha256:50c3b2f6988dfc307b86e5301d69611af31f4789bdf232863b07d3b02fe55ae0
 ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETPLATFORM
@@ -54,7 +54,7 @@ ENV GH_BOOTSTRAP_DIGEST_linux_amd64=83d5c2ccad5498f58bf6368acb1ab32588cf43ab3a4b
 ENV GH_BOOTSTRAP_DIGEST_linux_arm64=06f86ec7103d41993b76cd78072f43595c34aaa56506d971d9860e67140bf909
 
 # renovate: datasource=github-releases depName=cli/cli versioning=loose
-ENV GH_VERSION=2.96.0
+ENV GH_VERSION=2.98.0
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
