@@ -177,7 +177,7 @@ $(AQUA_ROOT_DIR)/.installed: .aqua.yaml .bin/aqua-$(AQUA_VERSION)/aqua
 #####################################################################
 
 .PHONY: all
-all: test base antigravity-docker claude-code-docker codex-docker opencode-docker ## Build everything.
+all: test base antigravity-docker claude-code-docker codex-docker copilot-docker opencode-docker ## Build everything.
 
 ## Testing
 #####################################################################
