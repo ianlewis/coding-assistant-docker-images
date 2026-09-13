@@ -36,3 +36,13 @@ rules:
 
         # Allow the use of dorny/paths-filter action
         - dorny/paths-filter
+
+  unpinned-uses:
+    ignore:
+      # Allow unpinned use of the slsa-verifier installer action.
+      - generator-container-ossf-slsa3-publish.yml:169:11
+      - generator-container-ossf-slsa3-publish.yml:272:11
+      - generator-container-ossf-slsa3-publish.yml:375:11
+      - generator-container-ossf-slsa3-publish.yml:478:11
+      - generator-container-ossf-slsa3-publish.yml:581:11
+      - generator-container-ossf-slsa3-publish.yml:684:11
