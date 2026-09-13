@@ -29,5 +29,4 @@ if [ -z "$user_home" ]; then
 fi
 
 log "Creating symlinks in user home directory: ${user_home}"
-mkdir -p "${user_home}/.gemini"
-ln -sf /antigravity-cli "${user_home}/.gemini/antigravity-cli"
+ln -sf /gemini "${user_home}/.gemini"
