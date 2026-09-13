@@ -41,7 +41,34 @@ The following are required to run the images:
 
 ## Usage
 
-### `claude-code`
+### `agy` (Google Antigravity CLI)
+
+- [Homepage](https://antigravity.google/product/antigravity-cli)
+
+Using the `agy` launcher script is recommended. This will verify and run
+the latest `antigravity` image with the correct parameters. The local state is
+stored in `~/.local/share/antigravity-docker`.
+
+The launcher script will run the image with roughly the following command. The
+project you wish to give access to `agy` should be mounted to `/workspace`
+inside the container.
+
+```bash
+ANTIGRAVITY_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/antigravity-docker"
+mkdir -p "${ANTIGRAVITY_DATA_HOME}"; \
+docker run \
+    --rm \
+    --interactive \
+    --tty \
+    --runtime io.containerd.runsc.v1 \
+    --volume "$(pwd):/workspace" \
+    --volume "${ANTIGRAVITY_DATA_HOME}:/gemini" \
+    "ghcr.io/ianlewis/antigravity"
+```
+
+### `claude` (Claude Code by Anthropic)
+
+- [Homepage](https://www.claude.com/)
 
 Using the `claude` launcher script is recommended. This will verify and run
 the latest `claude-code` image with the correct parameters. The local state is
@@ -71,7 +98,9 @@ docker run \
     "ghcr.io/ianlewis/claude-code"
 ```
 
-### `codex`
+### `codex` (OpenAI Codex CLI)
+
+- [Homepage](https://learn.chatgpt.com/docs/codex/cli)
 
 Using the `codex` launcher script is recommended. This will verify and run
 the latest `codex` image with the correct parameters. The local state is
@@ -95,7 +124,9 @@ docker run \
     "ghcr.io/ianlewis/codex"
 ```
 
-### `copilot`
+### `copilot` (GitHub Copilot CLI)
+
+- [Homepage](https://github.com/features/copilot/cli)
 
 Using the `copilot` launcher script is recommended. This will verify and run
 the latest `copilot` image with the correct parameters. The local state is
@@ -119,7 +150,9 @@ docker run \
     "ghcr.io/ianlewis/copilot"
 ```
 
-### `opencode`
+### `opencode` (OpenCode)
+
+- [Homepage](https://opencode.ai/)
 
 Using the `opencode` launcher script is recommended. This will verify and run
 the latest `opencode` image with the correct parameters. The local state is

@@ -21,10 +21,14 @@ rules:
   spelling:
     language: "en"
     skipPatterns:
+      - "/\\bAnthropic\\b/" # Anthropic, Inc.
+      - "/\\bAntigravity\\b/" # Google Antigravity
       - "/\\bDockerfiles?\\b/" # Dockerfile
       - "/\\bJSON\\b/" # JavaScript Object Notation
       - "/\\bSLSA\\b/" # JavaScript Object Notation
       - "/\\bLF\\b/" # Line Feed
+      - "/\\bOpenAI\\b/" # OpenAI, Inc.
+      - "/\\bOpenCode\\b/"
       - "/\\bUTF\\b/" # Unicode Transformation Format
       - "/\\bgVisor\\b/" # Google Sandbox Runtime
       - "/\\bnpm\\b/" # Node Package Manager

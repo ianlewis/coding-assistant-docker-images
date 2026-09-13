@@ -222,17 +222,13 @@ install: ## Install agent launcher scripts.
 run-antigravity: antigravity-docker ## Build and run Claude Code from source.
 	@# bash \
 	mkdir -p "$(XDG_DATA_HOME)/antigravity-docker"; \
-	if [ ! -f "$(XDG_DATA_HOME)/antigravity-docker/settings.json" ]; then \
-		mkdir -p "$(XDG_DATA_HOME)/antigravity-docker"; \
-		echo "{}" > "$(XDG_DATA_HOME)/antigravity-docker/settings.json"; \
-	fi; \
 	docker run \
 		--rm \
 		--interactive \
 		--tty \
         --runtime io.containerd.runsc.v1 \
 		--volume "$(REPO_ROOT):/workspace" \
-		--volume "$(XDG_DATA_HOME)/antigravity-docker:/antigravity-cli" \
+		--volume "$(XDG_DATA_HOME)/antigravity-docker:/gemini" \
 		"$(ANTIGRAVITY_IMAGE_NAME)"
 
 run-claude-code: claude-code-docker ## Build and run Claude Code from source.

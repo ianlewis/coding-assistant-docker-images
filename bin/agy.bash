@@ -78,7 +78,7 @@ function _main() {
         --tty \
         --runtime io.containerd.runsc.v1 \
         --volume "$(pwd):/workspace" \
-        --volume "${ANTIGRAVITY_DATA_HOME}:/antigravity-cli" \
+        --volume "${ANTIGRAVITY_DATA_HOME}:/gemini" \
         "${ANTIGRAVITY_IMAGE}@sha256:${verified_sha}" agy "${default_flags[@]}" "$@"
 }
 
