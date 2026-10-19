@@ -23,7 +23,7 @@ ARG BUILDPLATFORM
 # renovate: datasource=repology depName=debian_13/ca-certificates
 ENV CA_CERTIFICATES_VERSION=20250419
 # renovate: datasource=repology depName=debian_13/curl
-ENV CURL_VERSION=8.14.1-2+deb13u5
+ENV CURL_VERSION=8.14.1-2+deb13u7
 # renovate: datasource=repology depName=debian_13/gcc
 ENV GCC_VERSION=4:14.2.0-1
 # renovate: datasource=repology depName=debian_13/gosu
@@ -31,7 +31,7 @@ ENV GOSU_VERSION=1.17-3+b4
 # renovate: datasource=repology depName=debian_13/git
 ENV GIT_VERSION=1:2.47.3-0+deb13u1
 # renovate: datasource=repology depName=debian_13/jq
-ENV JQ_VERSION=1.7.1-6+deb13u3
+ENV JQ_VERSION=1.7.1-6+deb13u4
 # renovate: datasource=repology depName=debian_13/libc6-dev
 ENV LIBC6_DEV_VERSION=2.41-12+deb13u4
 # renovate: datasource=repology depName=debian_13/make
