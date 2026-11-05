@@ -130,11 +130,18 @@
     {
       groupName: "github-actions",
       matchManagers: ["github-actions"],
+      matchPackageNames: ["!slsa-framework/slsa-github-generator"],
       matchUpdateTypes: ["minor", "patch"],
       pinDigests: true,
 
       automerge: true,
       platformAutomerge: true,
+    },
+    {
+      groupName: "github-actions",
+      matchManagers: ["github-actions"],
+      matchPackageNames: ["slsa-framework/slsa-github-generator"],
+      pinDigests: false,
     },
     {
       groupName: "python",
@@ -193,6 +200,7 @@
       matchManagers: ["npm"],
       matchDepTypes: ["dependencies"],
       matchUpdateTypes: ["minor", "patch"],
+      schedule: ["at any time"],
     },
     {
       groupName: "npm dev",

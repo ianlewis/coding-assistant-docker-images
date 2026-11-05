@@ -49,11 +49,17 @@ jobs:
   fixme:
     uses: ./.github/workflows/workflow_call.fixme.yml
 
+  hadolint:
+    uses: ./.github/workflows/workflow_call.hadolint.yml
+
   markdownlint:
     uses: ./.github/workflows/workflow_call.markdownlint.yml
 
   renovate-config-validator:
     uses: ./.github/workflows/workflow_call.renovate-config-validator.yml
+
+  shellcheck:
+    uses: ./.github/workflows/workflow_call.shellcheck.yml
 
   textlint:
     uses: ./.github/workflows/workflow_call.textlint.yml
