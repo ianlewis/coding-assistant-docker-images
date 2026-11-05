@@ -4,8 +4,20 @@ This document describes the security policy that applies to this repository.
 
 ## Supported Versions
 
-Only the repository HEAD revision is supported, and security updates for this
-repository will be applied to HEAD only.
+Security updates for this repository will be applied the most recent major
+version and its minor versions.
+
+For example, if 2.2.0 is the latest version:
+
+| Version | Supported          |
+| ------- | ------------------ |
+| v2.2.x  | :white_check_mark: |
+| v2.1.x  | :white_check_mark: |
+| v2.0.x  | :white_check_mark: |
+| < 2.0.0 | :x:                |
+
+However, if the repository has not made a stable release (e.g. the latest
+release is < v1.0.0) then only the latest minor version will be patched.
 
 ## Security Release & Disclosure Process
 

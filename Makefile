@@ -830,6 +830,14 @@ zizmor: .venv/.installed ## Runs the zizmor linter.
 ## Maintenance
 #####################################################################
 
+.PHONY: update-lockfiles
+update-lockfiles: $(AQUA_ROOT_DIR)/.installed package-lock.json ## Update lockfiles.
+	@# bash \
+	$(REPO_ROOT)/.bin/aqua-$(AQUA_VERSION)/aqua \
+		--config "$(REPO_ROOT)/.aqua.yaml" \
+		update-checksum \
+		--prune
+
 .PHONY: todos
 todos: $(AQUA_ROOT_DIR)/.installed ## Print outstanding TODOs.
 	@# bash \

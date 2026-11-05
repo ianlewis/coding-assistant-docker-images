@@ -1,0 +1,8 @@
+# Copyright 2026 Ian Lewis
+# All rights reserved.
+
+paths:
+  ".github/workflows/**/*.yml":
+    ignore:
+      # TODO(github.com/rhysd/actionlint/issues/711): remove this ignore
+      - 'reusable workflow call ".+" at "uses" is not following the format'
