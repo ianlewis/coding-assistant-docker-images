@@ -83,7 +83,7 @@ run-antigravity: antigravity-docker ## Build and run Claude Code from source.
 
 run-claude-code: claude-code-docker ## Build and run Claude Code from source.
 	@mkdir -p "$(XDG_DATA_HOME)/claude-code-docker"
-	if [ ! -f "$(XDG_DATA_HOME)/claude-code-docker/claude.json" ]; then \
+	if [ ! -f "$(XDG_DATA_HOME)/claude-code-docker/claude.json" ]; then
 		echo "{}" > "$(XDG_DATA_HOME)/claude-code-docker/claude.json"
 	fi
 	docker run \
@@ -140,7 +140,7 @@ run-opencode: opencode-docker ## Build and run opencode from source.
 .PHONY: base
 base: base/Dockerfile base/entrypoint.sh ## Build the opencode Docker image.
 	@extra_args=()
-	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		extra_args=("--progress=plain")
 	fi
 	docker buildx build \
@@ -153,14 +153,14 @@ base: base/Dockerfile base/entrypoint.sh ## Build the opencode Docker image.
 
 .PHONY: antigravity-docker
 antigravity-docker: antigravity/Dockerfile antigravity/config.sh ## Build the antigravity-cli Docker image.
-	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		docker buildx build \
 			--output type=docker \
 			--progress=plain \
 			--tag "$(ANTIGRAVITY_IMAGE_NAME)" \
 			--file antigravity/Dockerfile \
 			antigravity/
-	else \
+	else
 		docker buildx build \
 			--output type=docker \
 			--tag "$(ANTIGRAVITY_IMAGE_NAME)" \
@@ -178,14 +178,14 @@ claude-code/package-lock.json: claude-code/package.json
 
 .PHONY: claude-code-docker
 claude-code-docker: claude-code/Dockerfile claude-code/package-lock.json claude-code/config.sh ## Build the claude-code Docker image.
-	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		docker buildx build \
 			--output type=docker \
 			--progress=plain \
 			--tag "$(CLAUDECODE_IMAGE_NAME)" \
 			--file claude-code/Dockerfile \
 			claude-code/
-	else \
+	else
 		docker buildx build \
 			--output type=docker \
 			--tag "$(CLAUDECODE_IMAGE_NAME)" \
@@ -203,14 +203,14 @@ codex/package-lock.json: codex/package.json
 
 .PHONY: codex-docker
 codex-docker: codex/Dockerfile codex/package-lock.json codex/config.sh ## Build the codex Docker image.
-	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		docker buildx build \
 			--output type=docker \
 			--progress=plain \
 			--tag "$(CODEX_IMAGE_NAME)" \
 			--file codex/Dockerfile \
 			codex/
-	else \
+	else
 		docker buildx build \
 			--output type=docker \
 			--tag "$(CODEX_IMAGE_NAME)" \
@@ -228,14 +228,14 @@ copilot/package-lock.json: copilot/package.json
 
 .PHONY: copilot-docker
 copilot-docker: copilot/Dockerfile copilot/package-lock.json copilot/config.sh ## Build the copilot Docker image.
-	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		docker buildx build \
 			--output type=docker \
 			--progress=plain \
 			--tag "$(COPILOT_IMAGE_NAME)" \
 			--file copilot/Dockerfile \
 			copilot/
-	else \
+	else
 		docker buildx build \
 			--output type=docker \
 			--tag "$(COPILOT_IMAGE_NAME)" \
@@ -253,14 +253,14 @@ opencode/package-lock.json: opencode/package.json
 
 .PHONY: opencode-docker
 opencode-docker: opencode/Dockerfile opencode/package-lock.json opencode/config.sh ## Build the opencode Docker image.
-	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		docker buildx build \
 			--output type=docker \
 			--progress=plain \
 			--tag "$(OPENCODE_IMAGE_NAME)" \
 			--file opencode/Dockerfile \
 			opencode/
-	else \
+	else
 		docker buildx build \
 			--output type=docker \
 			--tag "$(OPENCODE_IMAGE_NAME)" \
@@ -278,7 +278,7 @@ format: json-format license-headers md-format yaml-format ## Format all files
 .PHONY: json-format
 json-format: $(REPO_ROOT)/node_modules/.installed ## Format JSON files.
 	@loglevel="log"
-	if [ -n "$(DEBUG_LOGGING)" ]; then \
+	if [ -n "$(DEBUG_LOGGING)" ]; then
 		loglevel="debug"
 	fi
 	files=$$( \
@@ -287,7 +287,7 @@ json-format: $(REPO_ROOT)/node_modules/.installed ## Format JSON files.
 			'*.json5' \
 			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
 	)
-	if [ "$${files}" == "" ]; then \
+	if [ "$${files}" == "" ]; then
 		exit 0
 	fi
 	$(REPO_ROOT)/node_modules/.bin/prettier \
@@ -316,14 +316,14 @@ license-headers: ## Update license headers.
 			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
 	)
 	name=$$(git config user.name)
-	if [ "$${name}" == "" ]; then \
+	if [ "$${name}" == "" ]; then
 		>&2 echo "git user.name is required."
 		>&2 echo "Set it up using:"
 		>&2 echo "git config user.name \"John Doe\""
 		exit 1
 	fi
-	for filename in $${files}; do \
-		if ! ( head "$${filename}" | $(GREP) -iL "Copyright" > /dev/null ); then \
+	for filename in $${files}; do
+		if ! ( head "$${filename}" | $(GREP) -iL "Copyright" > /dev/null ); then
 			$(REPO_ROOT)/third_party/mbrukman/autogen/autogen.sh \
 				--in-place \
 				--no-code \
@@ -338,7 +338,7 @@ license-headers: ## Update license headers.
 .PHONY: md-format
 md-format: $(REPO_ROOT)/node_modules/.installed ## Format Markdown files.
 	@loglevel="log"
-	if [ -n "$(DEBUG_LOGGING)" ]; then \
+	if [ -n "$(DEBUG_LOGGING)" ]; then
 		loglevel="debug"
 	fi
 	files=$$( \
@@ -346,7 +346,7 @@ md-format: $(REPO_ROOT)/node_modules/.installed ## Format Markdown files.
 			'*.md' \
 			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
 	)
-	if [ "$${files}" == "" ]; then \
+	if [ "$${files}" == "" ]; then
 		exit 0
 	fi
 	# NOTE: prettier uses .editorconfig for tab-width. \
@@ -359,7 +359,7 @@ md-format: $(REPO_ROOT)/node_modules/.installed ## Format Markdown files.
 .PHONY: yaml-format
 yaml-format: $(REPO_ROOT)/node_modules/.installed ## Format YAML files.
 	@loglevel="log"
-	if [ -n "$(DEBUG_LOGGING)" ]; then \
+	if [ -n "$(DEBUG_LOGGING)" ]; then
 		loglevel="debug"
 	fi
 	files=$$( \
@@ -367,7 +367,7 @@ yaml-format: $(REPO_ROOT)/node_modules/.installed ## Format YAML files.
 			'*.yml' \
 			'*.yaml' \
 	)
-	if [ "$${files}" == "" ]; then \
+	if [ "$${files}" == "" ]; then
 		exit 0
 	fi
 	$(REPO_ROOT)/node_modules/.bin/prettier \
@@ -391,15 +391,15 @@ actionlint: $(AQUA_ROOT_DIR)/.installed ## Runs the actionlint linter.
 			'.github/workflows/*.yaml' \
 			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
 	)
-	if [ "$${files}" == "" ]; then \
+	if [ "$${files}" == "" ]; then
 		exit 0
 	fi
-	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		actionlint \
 			-format '{{range $$err := .}}::error file={{$$err.Filepath}},line={{$$err.Line}},col={{$$err.Column}}::{{$$err.Message}}%0A```%0A{{replace $$err.Snippet "\\n" "%0A"}}%0A```\n{{end}}' \
 			-ignore 'SC2016:' \
 			$${files}
-	else \
+	else
 		actionlint \
 			-ignore 'SC2016:' \
 			$${files}
@@ -413,15 +413,15 @@ checkmake: $(AQUA_ROOT_DIR)/.installed ## Runs the checkmake linter.
 			'Makefile' \
 			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
 	)
-	if [ "$${files}" == "" ]; then \
+	if [ "$${files}" == "" ]; then
 		exit 0
 	fi
-	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		# TODO: Remove newline from the format string after updating checkmake. \
 		checkmake \
 			--format '::error file={{.FileName}},line={{.LineNumber}}::{{.Rule}}: {{.Violation}}'$$'\n' \
 			$${files}
-	else \
+	else
 		checkmake $${files}
 	fi
 
@@ -431,21 +431,21 @@ COMMITLINT_TO_REF ?=
 commitlint: $(REPO_ROOT)/node_modules/.installed ## Run commitlint linter.
 	@commitlint_from=$(COMMITLINT_FROM_REF)
 	commitlint_to=$(COMMITLINT_TO_REF)
-	if [ "$${commitlint_from}" == "" ]; then \
+	if [ "$${commitlint_from}" == "" ]; then
 		# Try to get the default branch without hitting the remote server \
-		if git symbolic-ref --short refs/remotes/origin/HEAD >/dev/null 2>&1; then \
+		if git symbolic-ref --short refs/remotes/origin/HEAD >/dev/null 2>&1; then
 			commitlint_from=$$(git symbolic-ref --short refs/remotes/origin/HEAD)
-		elif git show-ref refs/remotes/origin/master >/dev/null 2>&1; then \
+		elif git show-ref refs/remotes/origin/master >/dev/null 2>&1; then
 			commitlint_from="origin/master"
-		else \
+		else
 			commitlint_from="origin/main"
 		fi
 	fi
-	if [ "$${commitlint_to}" == "" ]; then \
+	if [ "$${commitlint_to}" == "" ]; then
 		# if head is on the commitlint_from branch, then we will lint the \
 		# last commit by default. \
 		current_branch=$$(git rev-parse --abbrev-ref HEAD)
-		if [ "$${commitlint_from}" == "$${current_branch}" ]; then \
+		if [ "$${commitlint_from}" == "$${current_branch}" ]; then
 			commitlint_from="HEAD~1"
 		fi
 		commitlint_to="HEAD"
@@ -459,7 +459,7 @@ commitlint: $(REPO_ROOT)/node_modules/.installed ## Run commitlint linter.
 .PHONY: fixme
 fixme: $(AQUA_ROOT_DIR)/.installed ## Check for outstanding FIXMEs.
 	@output="default"
-	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		output="github"
 	fi
 	# NOTE: todos does not use `git ls-files` because many files might be \
@@ -471,19 +471,19 @@ fixme: $(AQUA_ROOT_DIR)/.installed ## Check for outstanding FIXMEs.
 
 .PHONY: format-check
 format-check: ## Check that files are properly formatted.
-	@if [ -n "$$(git diff)" ]; then \
+	@if [ -n "$$(git diff)" ]; then
 		>&2 echo "The working directory is dirty. Please commit, stage, or stash changes and try again."
 		exit 1
 	fi
 	$(MAKE) format
 	exit_code=0
-	if [ -n "$$(git diff)" ]; then \
+	if [ -n "$$(git diff)" ]; then
 		>&2 echo "Some files need to be formatted. Please run 'make format' and try again."
-		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+		if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 			echo "::group::git diff"
 		fi
 		git --no-pager diff
-		if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+		if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 			echo "::endgroup::"
 		fi
 		exit_code=1
@@ -503,9 +503,9 @@ hadolint: $(AQUA_ROOT_DIR)/.installed ## Runs the hadolint linter.
 			'*.containerfile' \
 			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
 	)
-	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		hadolint -f checkstyle $${files}
-	else \
+	else
 		hadolint $${files}
 	fi
 
@@ -519,7 +519,7 @@ markdownlint: $(REPO_ROOT)/node_modules/.installed $(AQUA_ROOT_DIR)/.installed #
 			'*.md' \
 			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
 	)
-	if [ "$${files}" == "" ]; then \
+	if [ "$${files}" == "" ]; then
 		exit 0
 	fi
 	$(REPO_ROOT)/node_modules/.bin/markdownlint-cli2 $${files}
@@ -538,12 +538,12 @@ shellcheck: $(AQUA_ROOT_DIR)/.installed ## Runs the shellcheck linter.
 			| $(GREP) -e ':.*shell' \
 			| cut -d':' -f1 \
 	)
-	if [ "$${files}" == "" ]; then \
+	if [ "$${files}" == "" ]; then
 		exit 0
 	fi
-	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		exit_code=0
-		while IFS="" read -r p && [ -n "$$p" ]; do \
+		while IFS="" read -r p && [ -n "$$p" ]; do
 			level=$$(echo "$$p" | jq -c '.level // empty' | tr -d '"')
 			file=$$(echo "$$p" | jq -c '.file // empty' | tr -d '"')
 			line=$$(echo "$$p" | jq -c '.line // empty' | tr -d '"')
@@ -565,7 +565,7 @@ shellcheck: $(AQUA_ROOT_DIR)/.installed ## Runs the shellcheck linter.
 			esac
 		done <<< "$$(echo -n "$$files" | xargs shellcheck -f json $(SHELLCHECK_ARGS) | jq -c '.[]')"
 		exit "$${exit_code}"
-	else \
+	else
 		echo -n "$$files" | xargs shellcheck $(SHELLCHECK_ARGS)
 	fi
 
@@ -578,15 +578,15 @@ textlint: $(REPO_ROOT)/node_modules/.installed $(AQUA_ROOT_DIR)/.installed ## Ru
 			':!:requirements*.txt' \
 			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
 	)
-	if [ "$${files}" == "" ]; then \
+	if [ "$${files}" == "" ]; then
 		exit 0
 	fi
-	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		exit_code=0
-		while IFS="" read -r p && [ -n "$$p" ]; do \
+		while IFS="" read -r p && [ -n "$$p" ]; do
 			filePath=$$(echo "$$p" | jq -cr '.filePath // empty')
 			file=$$(realpath --relative-to="." "$${filePath}")
-			while IFS="" read -r m && [ -n "$$m" ]; do \
+			while IFS="" read -r m && [ -n "$$m" ]; do
 				line=$$(echo "$$m" | jq -cr '.loc.start.line // empty')
 				endline=$$(echo "$$m" | jq -cr '.loc.end.line // empty')
 				col=$$(echo "$${m}" | jq -cr '.loc.start.column // empty')
@@ -597,7 +597,7 @@ textlint: $(REPO_ROOT)/node_modules/.installed $(AQUA_ROOT_DIR)/.installed ## Ru
 			done <<<"$$(echo "$$p" | jq -cr '.messages[] // empty')"
 		done <<< "$$($(REPO_ROOT)/node_modules/.bin/textlint -c .textlintrc.yaml --format json $${files} 2>&1 | jq -c '.[]')"
 		exit "$${exit_code}"
-	else \
+	else
 		$(REPO_ROOT)/node_modules/.bin/textlint \
 			$${files}
 	fi
@@ -610,11 +610,11 @@ yamllint: $(REPO_ROOT)/.venv/.installed ## Runs the yamllint linter.
 			'*.yaml' \
 			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
 	)
-	if [ "$${files}" == "" ]; then \
+	if [ "$${files}" == "" ]; then
 		exit 0
 	fi
 	format="standard"
-	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		format="github"
 	fi
 	$(REPO_ROOT)/.venv/bin/yamllint \
@@ -632,10 +632,10 @@ zizmor: $(REPO_ROOT)/.venv/.installed ## Runs the zizmor linter.
 			'.github/workflows/*.yaml' \
 			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
 	)
-	if [ "$${files}" == "" ]; then \
+	if [ "$${files}" == "" ]; then
 		exit 0
 	fi
-	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		$(REPO_ROOT)/.venv/bin/zizmor \
 			--config .zizmor.yml \
 			--quiet \
@@ -663,7 +663,7 @@ update-lockfiles: $(AQUA_ROOT_DIR)/.installed $(REPO_ROOT)/package-lock.json ## 
 .PHONY: todos
 todos: $(AQUA_ROOT_DIR)/.installed ## Print outstanding TODOs.
 	@output="default"
-	if [ "$(OUTPUT_FORMAT)" == "github" ]; then \
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		output="github"
 	fi
 	# NOTE: todos does not use `git ls-files` because many files might be \
