@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # NOTE: the trixie-slim images are based on Debian 13 (Trixie).
-FROM node:24.20.0-trixie-slim@sha256:50c3b2f6988dfc307b86e5301d69611af31f4789bdf232863b07d3b02fe55ae0
+FROM node:24.22.1-trixie-slim@sha256:89c5244bc22a9bc3287d89ebc7e49b9cb5bb84cd40e6175ac3421d5a9f68b95a
 ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETPLATFORM
@@ -54,7 +54,7 @@ ENV GH_BOOTSTRAP_DIGEST_linux_amd64=83d5c2ccad5498f58bf6368acb1ab32588cf43ab3a4b
 ENV GH_BOOTSTRAP_DIGEST_linux_arm64=06f86ec7103d41993b76cd78072f43595c34aaa56506d971d9860e67140bf909
 
 # renovate: datasource=github-releases depName=cli/cli versioning=loose
-ENV GH_VERSION=2.102.0
+ENV GH_VERSION=2.103.3
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -107,7 +107,7 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 RUN echo "PATH=/usr/local/go/bin:\${PATH}" > /etc/profile.d/0-base.sh
 
 # renovate: datasource=golang-version depName=golang versioning=loose
-ENV GOLANG_VERSION=1.27.1
+ENV GOLANG_VERSION=1.27.3
 ENV GOLANG_DIGEST_VAR_NAME=GOLANG_DIGEST_${TARGETOS}_${TARGETARCH}
 ENV GOLANG_DIGEST_linux_amd64=63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445
 ENV GOLANG_DIGEST_linux_arm64=3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec
@@ -115,7 +115,7 @@ ENV GOLANG_DIGEST_linux_arm64=3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958
 ENV GOBIN=/usr/local/go/bin
 
 # renovate: datasource=go depName=golang.org/x/tools/gopls versioning=loose
-ENV GOPLS_VERSION=0.24.0-pre.1
+ENV GOPLS_VERSION=0.24.0
 
 RUN url="https://dl.google.com/go/go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz"; \
     sha256="${!GOLANG_DIGEST_VAR_NAME}"; \
