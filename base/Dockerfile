@@ -59,49 +59,50 @@ ENV GH_VERSION=2.103.3
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 # Install dependencies
-RUN --mount=type=secret,id=gh_token \
-    apt-get update \
-    && apt-get install -y --no-install-recommends \
-        wget=${WGET_VERSION} \
-        ca-certificates=${CA_CERTIFICATES_VERSION} \
-	&& bootstrap_tempdir=$(mktemp -d) \
-    && wget -nv -O"${bootstrap_tempdir}/gh.tar.gz" "https://github.com/cli/cli/releases/download/v${GH_BOOTSTRAP_VERSION}/gh_${GH_BOOTSTRAP_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz" \
-    && gh_bootstrap_digest_var="GH_BOOTSTRAP_DIGEST_${TARGETOS}_${TARGETARCH}" \
-    && echo "${!gh_bootstrap_digest_var}  ${bootstrap_tempdir}/gh.tar.gz" | sha256sum -c - \
-    && tar -C "${bootstrap_tempdir}" -xzf "${bootstrap_tempdir}/gh.tar.gz" \
-	&& tempdir=$(mktemp -d) \
-    && wget -nv -O"${tempdir}/gh.tar.gz" "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz" \
-    && GH_TOKEN="$(cat /run/secrets/gh_token)" \
-        "${bootstrap_tempdir}/gh_${GH_BOOTSTRAP_VERSION}_${TARGETOS}_${TARGETARCH}/bin/gh" \
-            release verify-asset \
-            --repo cli/cli \
-            "v${GH_VERSION}" \
-            "${tempdir}/gh.tar.gz"\
-    && tar -C "${tempdir}" -xzf "${tempdir}/gh.tar.gz" \
-    && mv "${tempdir}/gh_${GH_VERSION}_${TARGETOS}_${TARGETARCH}/bin/gh" "/usr/local/bin/gh" \
-    && rm -rf "${bootstrap_tempdir}" \
-    && rm -rf "${tempdir}" \
-	&& apt-get update \
-	&& apt-get install -y --no-install-recommends \
-        curl=${CURL_VERSION} \
-        g++=${GCC_VERSION} \
-        g++-x86-64-linux-gnu=${GCC_VERSION} \
-        g++-aarch64-linux-gnu=${GCC_VERSION} \
-        gcc=${GCC_VERSION} \
-        gcc-x86-64-linux-gnu=${GCC_VERSION} \
-        gcc-aarch64-linux-gnu=${GCC_VERSION} \
-        gosu=${GOSU_VERSION} \
-        git=${GIT_VERSION} \
-        jq=${JQ_VERSION} \
-        libc6-dev=${LIBC6_DEV_VERSION} \
-        make=${MAKE_VERSION} \
-        python3=${PYTHON3_VERSION} \
-        python3-venv=${PYTHON3_VERSION} \
-        python3-pip=${PYTHON3_PIP_VERSION} \
-        unzip=${UNZIP_VERSION} \
-        yq=${YQ_VERSION} \
-        zip=${ZIP_VERSION} \
-    && rm -rf /var/lib/apt/lists/*
+RUN --mount=type=secret,id=gh_token <<EOF
+apt-get update
+apt-get install -y --no-install-recommends \
+    wget=${WGET_VERSION} \
+    ca-certificates=${CA_CERTIFICATES_VERSION}
+bootstrap_tempdir=$(mktemp -d)
+wget -nv -O"${bootstrap_tempdir}/gh.tar.gz" "https://github.com/cli/cli/releases/download/v${GH_BOOTSTRAP_VERSION}/gh_${GH_BOOTSTRAP_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz"
+gh_bootstrap_digest_var="GH_BOOTSTRAP_DIGEST_${TARGETOS}_${TARGETARCH}"
+echo "${!gh_bootstrap_digest_var}  ${bootstrap_tempdir}/gh.tar.gz" | sha256sum -c -
+tar -C "${bootstrap_tempdir}" -xzf "${bootstrap_tempdir}/gh.tar.gz"
+tempdir=$(mktemp -d)
+wget -nv -O"${tempdir}/gh.tar.gz" "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz"
+GH_TOKEN="$(cat /run/secrets/gh_token)" \
+    "${bootstrap_tempdir}/gh_${GH_BOOTSTRAP_VERSION}_${TARGETOS}_${TARGETARCH}/bin/gh" \
+        release verify-asset \
+        --repo cli/cli \
+        "v${GH_VERSION}" \
+        "${tempdir}/gh.tar.gz"
+tar -C "${tempdir}" -xzf "${tempdir}/gh.tar.gz"
+mv "${tempdir}/gh_${GH_VERSION}_${TARGETOS}_${TARGETARCH}/bin/gh" "/usr/local/bin/gh"
+rm -rf "${bootstrap_tempdir}"
+rm -rf "${tempdir}"
+apt-get update
+apt-get install -y --no-install-recommends \
+    curl=${CURL_VERSION} \
+    g++=${GCC_VERSION} \
+    g++-x86-64-linux-gnu=${GCC_VERSION} \
+    g++-aarch64-linux-gnu=${GCC_VERSION} \
+    gcc=${GCC_VERSION} \
+    gcc-x86-64-linux-gnu=${GCC_VERSION} \
+    gcc-aarch64-linux-gnu=${GCC_VERSION} \
+    gosu=${GOSU_VERSION} \
+    git=${GIT_VERSION} \
+    jq=${JQ_VERSION} \
+    libc6-dev=${LIBC6_DEV_VERSION} \
+    make=${MAKE_VERSION} \
+    python3=${PYTHON3_VERSION} \
+    python3-venv=${PYTHON3_VERSION} \
+    python3-pip=${PYTHON3_PIP_VERSION} \
+    unzip=${UNZIP_VERSION} \
+    yq=${YQ_VERSION} \
+    zip=${ZIP_VERSION}
+rm -rf /var/lib/apt/lists/*
+EOF
 
 ENV PATH="/usr/local/go/bin:${PATH}"
 RUN echo "PATH=/usr/local/go/bin:\${PATH}" > /etc/profile.d/0-base.sh
@@ -117,18 +118,21 @@ ENV GOBIN=/usr/local/go/bin
 # renovate: datasource=go depName=golang.org/x/tools/gopls versioning=loose
 ENV GOPLS_VERSION=0.24.0
 
-RUN url="https://dl.google.com/go/go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz"; \
-    sha256="${!GOLANG_DIGEST_VAR_NAME}"; \
-	wget --progress=dot:giga -O go.tgz "${url}" --progress=dot:giga; \
-	echo "${sha256} *go.tgz" | sha256sum -c -; \
-	tar -C /usr/local -xzf go.tgz; \
-	rm go.tgz; \
-    # smoke test \
-    go version; \
-    # install gopls \
-    go install "golang.org/x/tools/gopls@v${GOPLS_VERSION}"; \
-    # smake test gopls \
-    gopls version
+# hadolint ignore=SC3053 # We are using bash not sh
+RUN <<EOF
+url="https://dl.google.com/go/go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz"
+sha256="${!GOLANG_DIGEST_VAR_NAME}"
+wget --progress=dot:giga -O go.tgz "${url}" --progress=dot:giga
+echo "${sha256} *go.tgz" | sha256sum -c -
+tar -C /usr/local -xzf go.tgz
+rm go.tgz
+# smoke test
+go version
+# install gopls
+go install "golang.org/x/tools/gopls@v${GOPLS_VERSION}"
+# smake test gopls
+gopls version
+EOF
 
 COPY entrypoint.sh /entrypoint.sh
 
