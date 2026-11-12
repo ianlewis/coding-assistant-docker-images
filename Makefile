@@ -42,7 +42,8 @@ test: lint ## Run all tests.
 
 .PHONY: install
 install: ## Install agent launcher scripts.
-	@cp -f \
+	@echo "Installing agent launcher scripts..."
+	cp -f \
 		$(REPO_ROOT)/config/policy.cue \
 		$(XDG_CONFIG_HOME)/coding-assistant-docker-images/
 	cp -f \
@@ -71,7 +72,8 @@ install: ## Install agent launcher scripts.
 #####################################################################
 
 run-antigravity: antigravity-docker ## Build and run Claude Code from source.
-	@mkdir -p "$(XDG_DATA_HOME)/antigravity-docker"
+	@echo "Running antigravity..."
+	mkdir -p "$(XDG_DATA_HOME)/antigravity-docker"
 	docker run \
 		--rm \
 		--interactive \
@@ -82,7 +84,8 @@ run-antigravity: antigravity-docker ## Build and run Claude Code from source.
 		"$(ANTIGRAVITY_IMAGE_NAME)"
 
 run-claude-code: claude-code-docker ## Build and run Claude Code from source.
-	@mkdir -p "$(XDG_DATA_HOME)/claude-code-docker"
+	@echo "Running claude-code..."
+	mkdir -p "$(XDG_DATA_HOME)/claude-code-docker"
 	if [ ! -f "$(XDG_DATA_HOME)/claude-code-docker/claude.json" ]; then
 		echo "{}" > "$(XDG_DATA_HOME)/claude-code-docker/claude.json"
 	fi
@@ -97,7 +100,8 @@ run-claude-code: claude-code-docker ## Build and run Claude Code from source.
 		"$(CLAUDECODE_IMAGE_NAME)"
 
 run-codex: codex-docker ## Build and run codex from source.
-	@mkdir -p "$(XDG_DATA_HOME)/codex-docker"
+	@echo "Running codex..."
+	mkdir -p "$(XDG_DATA_HOME)/codex-docker"
 	docker run \
 		--rm \
 		--interactive \
@@ -109,7 +113,8 @@ run-codex: codex-docker ## Build and run codex from source.
     		--config "shell_environment_policy.include_only='[\"PATH\",\"HOME\"]'"
 
 run-copilot: copilot-docker ## Build and run copilot from source.
-	@mkdir -p "$(XDG_DATA_HOME)/copilot-docker"
+	@echo "Running copilot..."
+	mkdir -p "$(XDG_DATA_HOME)/copilot-docker"
 	docker run \
 		--rm \
 		--interactive \
@@ -120,7 +125,8 @@ run-copilot: copilot-docker ## Build and run copilot from source.
 		"$(COPILOT_IMAGE_NAME)"
 
 run-opencode: opencode-docker ## Build and run opencode from source.
-	@mkdir -p "$(XDG_DATA_HOME)/opencode-docker/share"
+	@echo "Running opencode..."
+	mkdir -p "$(XDG_DATA_HOME)/opencode-docker/share"
 	mkdir -p "$(XDG_DATA_HOME)/opencode-docker/state"
 	mkdir -p "$(XDG_DATA_HOME)/opencode-docker/config"
 	docker run \
@@ -139,7 +145,8 @@ run-opencode: opencode-docker ## Build and run opencode from source.
 
 .PHONY: base
 base: base/Dockerfile base/entrypoint.sh ## Build the opencode Docker image.
-	@extra_args=()
+	@echo "Building base Docker image..."
+	extra_args=()
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		extra_args=("--progress=plain")
 	fi
@@ -153,7 +160,8 @@ base: base/Dockerfile base/entrypoint.sh ## Build the opencode Docker image.
 
 .PHONY: antigravity-docker
 antigravity-docker: antigravity/Dockerfile antigravity/config.sh ## Build the antigravity-cli Docker image.
-	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then
+	@echo "Building antigravity Docker image..."
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		docker buildx build \
 			--output type=docker \
 			--progress=plain \
@@ -178,7 +186,8 @@ claude-code/package-lock.json: claude-code/package.json
 
 .PHONY: claude-code-docker
 claude-code-docker: claude-code/Dockerfile claude-code/package-lock.json claude-code/config.sh ## Build the claude-code Docker image.
-	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then
+	@echo "Building claude-code Docker image..."
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		docker buildx build \
 			--output type=docker \
 			--progress=plain \
@@ -203,7 +212,8 @@ codex/package-lock.json: codex/package.json
 
 .PHONY: codex-docker
 codex-docker: codex/Dockerfile codex/package-lock.json codex/config.sh ## Build the codex Docker image.
-	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then
+	@echo "Building codex Docker image..."
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		docker buildx build \
 			--output type=docker \
 			--progress=plain \
@@ -228,7 +238,8 @@ copilot/package-lock.json: copilot/package.json
 
 .PHONY: copilot-docker
 copilot-docker: copilot/Dockerfile copilot/package-lock.json copilot/config.sh ## Build the copilot Docker image.
-	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then
+	@echo "Building copilot Docker image..."
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		docker buildx build \
 			--output type=docker \
 			--progress=plain \
@@ -253,7 +264,8 @@ opencode/package-lock.json: opencode/package.json
 
 .PHONY: opencode-docker
 opencode-docker: opencode/Dockerfile opencode/package-lock.json opencode/config.sh ## Build the opencode Docker image.
-	@if [ "$(OUTPUT_FORMAT)" == "github" ]; then
+	@echo "Building opencode Docker image..."
+	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		docker buildx build \
 			--output type=docker \
 			--progress=plain \
@@ -268,7 +280,6 @@ opencode-docker: opencode/Dockerfile opencode/package-lock.json opencode/config.
 			opencode/
 	fi
 
-
 ## Formatting
 #####################################################################
 
@@ -277,7 +288,8 @@ format: json-format license-headers md-format yaml-format ## Format all files
 
 .PHONY: json-format
 json-format: $(REPO_ROOT)/node_modules/.installed ## Format JSON files.
-	@loglevel="log"
+	@echo "Formatting JSON files..."
+	loglevel="log"
 	if [ -n "$(DEBUG_LOGGING)" ]; then
 		loglevel="debug"
 	fi
@@ -296,48 +308,10 @@ json-format: $(REPO_ROOT)/node_modules/.installed ## Format JSON files.
 		--write \
 		$${files}
 
-.PHONY: license-headers
-license-headers: ## Update license headers.
-	@files=$$( \
-		git ls-files --deduplicate \
-			'*.c' \
-			'*.cpp' \
-			'*.go' \
-			'*.h' \
-			'*.hpp' \
-			'*.js' \
-			'*.lua' \
-			'*.py' \
-			'*.rb' \
-			'*.rs' \
-			'*.yaml' \
-			'*.yml' \
-			'Makefile' \
-			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
-	)
-	name=$$(git config user.name)
-	if [ "$${name}" == "" ]; then
-		>&2 echo "git user.name is required."
-		>&2 echo "Set it up using:"
-		>&2 echo "git config user.name \"John Doe\""
-		exit 1
-	fi
-	for filename in $${files}; do
-		if ! ( head "$${filename}" | $(GREP) -iL "Copyright" > /dev/null ); then
-			$(REPO_ROOT)/third_party/mbrukman/autogen/autogen.sh \
-				--in-place \
-				--no-code \
-				--no-tlc \
-				--copyright "$${name}" \
-				--license apache \
-				"$${filename}"
-		fi
-	done
-
-
 .PHONY: md-format
 md-format: $(REPO_ROOT)/node_modules/.installed ## Format Markdown files.
-	@loglevel="log"
+	@echo "Formatting Markdown files..."
+	loglevel="log"
 	if [ -n "$(DEBUG_LOGGING)" ]; then
 		loglevel="debug"
 	fi
@@ -358,7 +332,8 @@ md-format: $(REPO_ROOT)/node_modules/.installed ## Format Markdown files.
 
 .PHONY: yaml-format
 yaml-format: $(REPO_ROOT)/node_modules/.installed ## Format YAML files.
-	@loglevel="log"
+	@echo "Formatting YAML files..."
+	loglevel="log"
 	if [ -n "$(DEBUG_LOGGING)" ]; then
 		loglevel="debug"
 	fi
@@ -384,7 +359,7 @@ lint: actionlint checkmake commitlint fixme format-check hadolint markdownlint r
 
 .PHONY: actionlint
 actionlint: $(AQUA_ROOT_DIR)/.installed ## Runs the actionlint linter.
-	@# NOTE: We need to ignore config files used in tests. \
+	@echo "Running actionlint..."
 	files=$$( \
 		git ls-files --deduplicate \
 			'.github/workflows/*.yml' \
@@ -407,7 +382,7 @@ actionlint: $(AQUA_ROOT_DIR)/.installed ## Runs the actionlint linter.
 
 .PHONY: checkmake
 checkmake: $(AQUA_ROOT_DIR)/.installed ## Runs the checkmake linter.
-	@# NOTE: We need to ignore config files used in tests. \
+	@echo "Running checkmake..."
 	files=$$( \
 		git ls-files --deduplicate \
 			'Makefile' \
@@ -429,7 +404,8 @@ checkmake: $(AQUA_ROOT_DIR)/.installed ## Runs the checkmake linter.
 COMMITLINT_FROM_REF ?=
 COMMITLINT_TO_REF ?=
 commitlint: $(REPO_ROOT)/node_modules/.installed ## Run commitlint linter.
-	@commitlint_from=$(COMMITLINT_FROM_REF)
+	@echo "Running commitlint..."
+	commitlint_from=$(COMMITLINT_FROM_REF)
 	commitlint_to=$(COMMITLINT_TO_REF)
 	if [ "$${commitlint_from}" == "" ]; then
 		# Try to get the default branch without hitting the remote server \
@@ -458,7 +434,8 @@ commitlint: $(REPO_ROOT)/node_modules/.installed ## Run commitlint linter.
 
 .PHONY: fixme
 fixme: $(AQUA_ROOT_DIR)/.installed ## Check for outstanding FIXMEs.
-	@output="default"
+	@echo "Checking for outstanding FIXMEs..."
+	output="default"
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		output="github"
 	fi
@@ -471,6 +448,7 @@ fixme: $(AQUA_ROOT_DIR)/.installed ## Check for outstanding FIXMEs.
 
 .PHONY: format-check
 format-check: ## Check that files are properly formatted.
+	@echo "Checking that files are properly formatted..."
 	@if [ -n "$$(git diff)" ]; then
 		>&2 echo "The working directory is dirty. Please commit, stage, or stash changes and try again."
 		exit 1
@@ -493,7 +471,8 @@ format-check: ## Check that files are properly formatted.
 
 .PHONY: hadolint
 hadolint: $(AQUA_ROOT_DIR)/.installed ## Runs the hadolint linter.
-	@files=$$( \
+	@echo "Running hadolint..."
+	files=$$( \
 		git ls-files --deduplicate \
 			'[Dd]ockerfile' \
 			'*/[Dd]ockerfile' \
@@ -511,9 +490,7 @@ hadolint: $(AQUA_ROOT_DIR)/.installed ## Runs the hadolint linter.
 
 .PHONY: markdownlint
 markdownlint: $(REPO_ROOT)/node_modules/.installed $(AQUA_ROOT_DIR)/.installed ## Runs the markdownlint linter.
-	@# NOTE: Issue and PR templates are handled specially so we can disable \
-	# MD041/first-line-heading/first-line-h1 without adding an ugly html comment \
-	# at the top of the file. \
+	@echo "Running markdownlint..."
 	files=$$( \
 		git ls-files --deduplicate \
 			'*.md' \
@@ -526,13 +503,15 @@ markdownlint: $(REPO_ROOT)/node_modules/.installed $(AQUA_ROOT_DIR)/.installed #
 
 .PHONY: renovate-config-validator
 renovate-config-validator: $(REPO_ROOT)/node_modules/.installed ## Validate Renovate configuration.
-	@$(REPO_ROOT)/node_modules/.bin/renovate-config-validator \
+	@echo "Validating Renovate configuration..."
+	$(REPO_ROOT)/node_modules/.bin/renovate-config-validator \
 		--strict
 
 .PHONY: shellcheck
 SHELLCHECK_ARGS ?=
 shellcheck: $(AQUA_ROOT_DIR)/.installed ## Runs the shellcheck linter.
-	@files=$$( \
+	@echo "Running shellcheck..."
+	files=$$( \
 		git ls-files --deduplicate \
 			| xargs file \
 			| $(GREP) -e ':.*shell' \
@@ -571,7 +550,8 @@ shellcheck: $(AQUA_ROOT_DIR)/.installed ## Runs the shellcheck linter.
 
 .PHONY: textlint
 textlint: $(REPO_ROOT)/node_modules/.installed $(AQUA_ROOT_DIR)/.installed ## Runs the textlint linter.
-	@files=$$( \
+	@echo "Running textlint..."
+	files=$$( \
 		git ls-files --deduplicate \
 			'*.md' \
 			'*.txt' \
@@ -604,7 +584,8 @@ textlint: $(REPO_ROOT)/node_modules/.installed $(AQUA_ROOT_DIR)/.installed ## Ru
 
 .PHONY: yamllint
 yamllint: $(REPO_ROOT)/.venv/.installed ## Runs the yamllint linter.
-	@files=$$( \
+	@echo "Running yamllint..."
+	files=$$( \
 		git ls-files --deduplicate \
 			'*.yml' \
 			'*.yaml' \
@@ -637,14 +618,12 @@ zizmor: $(REPO_ROOT)/.venv/.installed ## Runs the zizmor linter.
 	fi
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		$(REPO_ROOT)/.venv/bin/zizmor \
-			--config .zizmor.yml \
 			--quiet \
 			--pedantic \
 			--format sarif \
 			$${files} > zizmor.sarif.json
 	fi
 	$(REPO_ROOT)/.venv/bin/zizmor \
-		--config .zizmor.yml \
 		--quiet \
 		--pedantic \
 		--format plain \
@@ -654,15 +633,51 @@ zizmor: $(REPO_ROOT)/.venv/.installed ## Runs the zizmor linter.
 #####################################################################
 
 .PHONY: update-lockfiles
-update-lockfiles: $(AQUA_ROOT_DIR)/.installed $(REPO_ROOT)/package-lock.json ## Update lockfiles.
-	@$(REPO_ROOT)/.bin/aqua-$(AQUA_VERSION)/aqua \
-		--config "$(REPO_ROOT)/.aqua.yaml" \
-		update-checksum \
-		--prune
+update-lockfiles: $(REPO_ROOT)/.aqua-checksums.json $(REPO_ROOT)/package-lock.json $(REPO_ROOT)/uv.lock ## Update lockfiles.
+
+.PHONY: license-headers
+license-headers: ## Update license headers.
+	@echo "Updating license headers..."
+	files=$$( \
+		git ls-files --deduplicate \
+			'*.c' \
+			'*.cpp' \
+			'*.go' \
+			'*.h' \
+			'*.hpp' \
+			'*.js' \
+			'*.lua' \
+			'*.py' \
+			'*.rb' \
+			'*.rs' \
+			'*.yaml' \
+			'*.yml' \
+			'Makefile' \
+			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
+	)
+	name=$$(git config user.name)
+	if [ "$${name}" == "" ]; then
+		>&2 echo "git user.name is required."
+		>&2 echo "Set it up using:"
+		>&2 echo "git config user.name \"John Doe\""
+		exit 1
+	fi
+	for filename in $${files}; do
+		if ! ( head "$${filename}" | $(GREP) -iL "Copyright" > /dev/null ); then
+			$(REPO_ROOT)/third_party/mbrukman/autogen/autogen.sh \
+				--in-place \
+				--no-code \
+				--no-tlc \
+				--copyright "$${name}" \
+				--license apache \
+				"$${filename}"
+		fi
+	done
 
 .PHONY: todos
 todos: $(AQUA_ROOT_DIR)/.installed ## Print outstanding TODOs.
-	@output="default"
+	@echo "Checking for outstanding TODOs..."
+	output="default"
 	if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 		output="github"
 	fi
