@@ -107,10 +107,10 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 RUN echo "PATH=/usr/local/go/bin:\${PATH}" > /etc/profile.d/0-base.sh
 
 # renovate: datasource=golang-version depName=golang versioning=loose
-ENV GOLANG_VERSION=1.27.3
+ENV GOLANG_VERSION=1.27.4
 ENV GOLANG_DIGEST_VAR_NAME=GOLANG_DIGEST_${TARGETOS}_${TARGETARCH}
-ENV GOLANG_DIGEST_linux_amd64=63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445
-ENV GOLANG_DIGEST_linux_arm64=3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec
+ENV GOLANG_DIGEST_linux_amd64=7226736c2339719cda28fbf3a54d71aa63bcefe376e98cef00034268dab24840
+ENV GOLANG_DIGEST_linux_arm64=3392582988a273a87ab5043ee1b2c9c17a2c3c00580bf9326c47a2e0aaaeac92
 
 ENV GOBIN=/usr/local/go/bin
 
