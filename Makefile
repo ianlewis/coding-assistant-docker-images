@@ -449,14 +449,15 @@ fixme: $(AQUA_ROOT_DIR)/.installed ## Check for outstanding FIXMEs.
 .PHONY: format-check
 format-check: ## Check that files are properly formatted.
 	@echo "Checking that files are properly formatted..."
-	@if [ -n "$$(git diff)" ]; then
+	if [ -n "$$(git diff)" ]; then
 		>&2 echo "The working directory is dirty. Please commit, stage, or stash changes and try again."
 		exit 1
 	fi
 	$(MAKE) format
+	$(MAKE) license-headers
 	exit_code=0
 	if [ -n "$$(git diff)" ]; then
-		>&2 echo "Some files need to be formatted. Please run 'make format' and try again."
+		>&2 echo "Some files need to be formatted. Please run '$(MAKE) format' and try again."
 		if [ "$(OUTPUT_FORMAT)" == "github" ]; then
 			echo "::group::git diff"
 		fi
@@ -638,7 +639,7 @@ update-lockfiles: $(REPO_ROOT)/.aqua-checksums.json $(REPO_ROOT)/package-lock.js
 .PHONY: license-headers
 license-headers: ## Update license headers.
 	@echo "Updating license headers..."
-	files=$$( \
+	files=$$(
 		git ls-files --deduplicate \
 			'*.c' \
 			'*.cpp' \
@@ -653,9 +654,9 @@ license-headers: ## Update license headers.
 			'*.yaml' \
 			'*.yml' \
 			'Makefile' \
-			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done \
+			| while IFS='' read -r f; do [ -f "$${f}" ] && echo "$${f}" || true; done
 	)
-	name=$$(git config user.name)
+	name=$$(git config user.name || true)
 	if [ "$${name}" == "" ]; then
 		>&2 echo "git user.name is required."
 		>&2 echo "Set it up using:"
@@ -664,7 +665,7 @@ license-headers: ## Update license headers.
 	fi
 	for filename in $${files}; do
 		if ! ( head "$${filename}" | $(GREP) -iL "Copyright" > /dev/null ); then
-			$(REPO_ROOT)/third_party/mbrukman/autogen/autogen.sh \
+			./third_party/mbrukman/autogen/autogen.sh \
 				--in-place \
 				--no-code \
 				--no-tlc \
