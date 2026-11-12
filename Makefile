@@ -284,7 +284,7 @@ opencode-docker: opencode/Dockerfile opencode/package-lock.json opencode/config.
 #####################################################################
 
 .PHONY: format
-format: json-format license-headers md-format yaml-format ## Format all files
+format: json-format md-format yaml-format ## Format all files
 
 .PHONY: json-format
 json-format: $(REPO_ROOT)/node_modules/.installed ## Format JSON files.
