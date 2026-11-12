@@ -148,6 +148,11 @@
       matchManagers: ["github-actions"],
       matchPackageNames: ["slsa-framework/slsa-github-generator"],
       pinDigests: false,
+
+      // NOTE: We'll auto-merge any changes to slsa-github-generator since we
+      //       trust this repo.
+      automerge: true,
+      platformAutomerge: true,
     },
     {
       groupName: "python",
@@ -159,6 +164,12 @@
         "project.optional-dependencies",
         "requires-python",
       ],
+
+      // NOTE: We'll auto-merge any changes to dependencies since Python is not
+      //       currently used outside of development dependencies and it will
+      //       have minor impact on the project.
+      automerge: true,
+      platformAutomerge: true,
     },
     // NOTE: dependency-groups (PEP 725) in pep621 are sometimes used to specify
     //       development dependencies. However, they sometimes also include
@@ -207,6 +218,12 @@
       matchDepTypes: ["dependencies"],
       matchUpdateTypes: ["minor", "patch"],
       schedule: ["at any time"],
+
+      // NOTE: We are automerging minor and patch updates for dependencies since
+      //       we want to keep dependencies as up to date as possible and coding
+      //       agent harnesses are frequently updated.
+      automerge: true,
+      platformAutomerge: true,
     },
     {
       groupName: "npm dev",
@@ -222,6 +239,12 @@
       matchFileNames: ["/(^|/|\\.)([Dd]ocker|[Cc]ontainer)file$/"],
       matchUpdateTypes: ["minor", "patch", "pin", "digest"],
       schedule: ["at any time"],
+
+      // NOTE: We are automerging minor and patch updates for Dockerfiles since
+      //       we want to keep dependencies as up to date as possible for the
+      //       base images.
+      automerge: true,
+      platformAutomerge: true,
     },
   ],
 }
