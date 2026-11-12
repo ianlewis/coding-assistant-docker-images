@@ -40,6 +40,9 @@
     // Explicitly set the schedule to "at any time" to ensure that security
     // update PRs are created as soon as possible.
     schedule: ["at any time"],
+
+    automerge: true,
+    platformAutomerge: true,
   },
   osvVulnerabilityAlerts: true,
 
@@ -65,6 +68,9 @@
     // TODO(github.com/ianlewis/repo-template/issues/570): Update schedule when
     // security updates for transitive dependencies is supported.
     schedule: ["* 0-3 1 * *"],
+
+    automerge: true,
+    platformAutomerge: true,
   },
 
   // Enable git submodule updates.

@@ -17,6 +17,26 @@
 # used throughout the Makefile. This file can be included in other Makefiles
 # (e.g. in subdirectories) to provide a consistent environment.
 
+# Check if running under GNU make
+ifdef MAKE_VERSION
+  # If $(.MAKE) is empty, this is GNU make
+  ifndef .MAKE
+    # Reject versions older than 4.0 (e.g. macOS Apple GNU make 3.81)
+    _MAJOR = $(firstword $(subst ., ,$(MAKE_VERSION)))
+    ifeq ($(shell test $(_MAJOR) -lt 4 && echo old),old)
+      # Check if on macOS and if so, provide instructions to install GNU make
+      # via Homebrew.
+      ifeq ($(shell uname -s),Darwin)
+        $(error Outdated GNU Make detected ($(MAKE_VERSION)). Please install make >= 4.0 via Homebrew: 'brew install make' and use 'gmake')
+	  else
+        $(error Outdated GNU Make detected ($(MAKE_VERSION)). Please install make >= 4.0)
+      endif
+    endif
+  else
+    $(error Non-GNU Make detected. Please use GNU Make >= 4.0)
+  endif
+endif
+
 # Print a warning if undefined variables are used in the Makefile.
 MAKEFLAGS += --warn-undefined-variables
 # Disable built-in rules to avoid conflicts with custom rules.
