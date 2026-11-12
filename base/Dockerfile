@@ -79,9 +79,9 @@ GH_TOKEN="$(cat /run/secrets/gh_token)" \
         "${tempdir}/gh.tar.gz"
 tar -C "${tempdir}" -xzf "${tempdir}/gh.tar.gz"
 mv "${tempdir}/gh_${GH_VERSION}_${TARGETOS}_${TARGETARCH}/bin/gh" "/usr/local/bin/gh"
-rm -rf "${bootstrap_tempdir}" \
-rm -rf "${tempdir}" \
-apt-get update \
+rm -rf "${bootstrap_tempdir}"
+rm -rf "${tempdir}"
+apt-get update
 apt-get install -y --no-install-recommends \
     curl=${CURL_VERSION} \
     g++=${GCC_VERSION} \
