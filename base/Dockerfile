@@ -32,9 +32,9 @@ ENV GOSU_VERSION=1.17-3+b4
 ENV GIT_VERSION=1:2.47.3-0+deb13u1
 # renovate: datasource=repology depName=debian_13/jq
 ENV JQ_VERSION=1.7.1-6+deb13u4
-# renovate: datasource=repology depName=debian_13/libc6-dev
+# renovate: datasource=repology depName=debian_13/glibc
 ENV LIBC6_DEV_VERSION=2.41-12+deb13u4
-# renovate: datasource=repology depName=debian_13/make
+# renovate: datasource=repology depName=debian_13/make-dfsg
 ENV MAKE_VERSION=4.4.1-2
 # renovate: datasource=repology depName=debian_13/python3
 ENV PYTHON3_VERSION=3.13.5-1
