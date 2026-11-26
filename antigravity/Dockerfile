@@ -18,7 +18,7 @@ ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
 # renovate: datasource=github-releases depName=google-antigravity/antigravity-cli versioning=loose
-ARG ANTIGRAVITY_CLI_VERSION=1.5.1
+ARG ANTIGRAVITY_CLI_VERSION=1.5.6
 
 WORKDIR /app
 
