@@ -21,7 +21,7 @@ ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
 # renovate: datasource=repology depName=debian_13/ca-certificates
-ENV CA_CERTIFICATES_VERSION=20250419
+ENV CA_CERTIFICATES_VERSION=20250419+deb13u1
 # renovate: datasource=repology depName=debian_13/curl
 ENV CURL_VERSION=8.14.1-2+deb13u7
 # renovate: datasource=repology depName=debian_13/gcc
