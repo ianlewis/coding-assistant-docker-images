@@ -54,7 +54,7 @@ ENV GH_BOOTSTRAP_DIGEST_linux_amd64=83d5c2ccad5498f58bf6368acb1ab32588cf43ab3a4b
 ENV GH_BOOTSTRAP_DIGEST_linux_arm64=06f86ec7103d41993b76cd78072f43595c34aaa56506d971d9860e67140bf909
 
 # renovate: datasource=github-releases depName=cli/cli versioning=loose
-ENV GH_VERSION=2.103.3
+ENV GH_VERSION=2.104.0
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
